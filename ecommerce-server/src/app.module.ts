@@ -10,7 +10,7 @@ import { UserController } from './controllers/user/user.controller';
     type:'postgres',
     host:'localhost',
     port:5342,
-    username:'',
+    username:'postgres',
     password:'admin',
     entities:[User],
     synchronize:true
