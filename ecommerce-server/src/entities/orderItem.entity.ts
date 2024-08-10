@@ -8,11 +8,9 @@ export class OrderItem {
   id: number;
 
   @ManyToOne(() => Order, (order) => order.orderItems)
-  @JoinColumn({ name: 'order_id' })
   order: Order;
 
   @ManyToOne(() => Product, (product) => product.orderItems)
-  @JoinColumn({ name: 'product_id' })
   product: Product;
 
   @Column()

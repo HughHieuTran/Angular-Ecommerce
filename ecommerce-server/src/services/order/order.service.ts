@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from 'src/entities/order.entity';
 import { OrderItem } from 'src/entities/orderItem.entity';
@@ -48,7 +48,7 @@ export class OrderService {
         for (const item of orderItems) {
             const product = await this.productRepository.findOneBy({ id: item.productId });
             if (!product) {
-                throw new Error(`Product with id ${item.productId} not found`);
+                throw new NotFoundException(`Product with id ${item.productId} not found`);
             }
             if (product.stock < item.quantity) {
                 throw new ConflictException(`Insufficient stock for product ${product.name}`);
@@ -61,9 +61,10 @@ export class OrderService {
                 quantity: item.quantity,
                 totalPrice: product.price * item.quantity,
             });
-
+            
             order.orderItems.push(orderItem);
         }
+        
 
         return this.orderRepository.save(order);
     }
@@ -75,6 +76,6 @@ export class OrderService {
         return this.orderRepository.find({ where: { user }, relations: ['orderItems', 'user'] });
     }
     async getAllOrders(): Promise<Order[]> {
-        return this.orderRepository.find({ relations: ['orderItems', 'user'] });
+        return (await this.orderRepository.find({ relations: ['orderItems', 'user'] }));
     }
 }
