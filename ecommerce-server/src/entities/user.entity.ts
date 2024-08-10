@@ -1,16 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, PrimaryColumn } from 'typeorm';
 import { Order } from './order.entity';  // Import the Order entity
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  username: string;
-
-  @Column()
+  @PrimaryColumn()
   email: string;
+
+  @Column()
+  username?: string | undefined;
 
   @Column()
   password: string;  // Consider using a hashed password
