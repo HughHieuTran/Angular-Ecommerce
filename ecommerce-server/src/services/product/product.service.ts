@@ -40,7 +40,19 @@ export class ProductService {
 
         return query.getMany();
     }
+    async create(): Promise<Product[]> {
+        const products = [
+            { name: 'Product A', price: 10.99, stock: 100 },
+            { name: 'Product B', price: 20.49, stock: 50 },
+            { name: 'Product C', price: 5.99, stock: 200 },
+            { name: 'Product D', price: 15.00, stock: 75 },
+        ];
 
+        return await this.productRepository.save(products);
+    }
+    async deleteAll(): Promise<void> {
+        await this.productRepository.clear();
+    }
 }
 
 export interface PaginationQueryDto {
