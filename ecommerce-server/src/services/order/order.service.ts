@@ -61,10 +61,10 @@ export class OrderService {
                 quantity: item.quantity,
                 totalPrice: product.price * item.quantity,
             });
-            
+
             order.orderItems.push(orderItem);
         }
-        
+
 
         return this.orderRepository.save(order);
     }
@@ -77,5 +77,14 @@ export class OrderService {
     }
     async getAllOrders(): Promise<Order[]> {
         return (await this.orderRepository.find({ relations: ['orderItems', 'user'] }));
+    }
+    async deleteAllOrders(): Promise<void> {
+        const orders = await this.orderRepository.find({ relations: ['orderItems'] });
+        orders.forEach((order) => {
+            order.orderItems.forEach((orderItem => {
+                this.orderItemRepository.remove(orderItem);
+            }))
+            this.orderRepository.remove(order);
+        })
     }
 }

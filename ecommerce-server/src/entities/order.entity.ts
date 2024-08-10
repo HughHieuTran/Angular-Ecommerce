@@ -7,12 +7,15 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('date')
+  @Column()
   orderDate: string;
 
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order,{
+    cascade: true,
+    onDelete: 'CASCADE' 
+  })
   orderItems: OrderItem[];
 }
