@@ -9,6 +9,31 @@ export class Product {
   @Column()
   name: string;
 
+  @Column({ default: '' })
+  sku?: string;
+
+  @Column({ default: 'DWST1429376-1' })
+  trademark?: string;
+
+  @Column({ default: 0 })
+  width?: number;
+  @Column({ default: 0 })
+  length?: number;
+  @Column({ default: 0 })
+  height?: number;
+
+  @Column({ default: 'Vietnam' })
+  manufacturer?: string;
+
+  @Column({ default: 'weight' })
+  propertyName?: number;
+
+  @Column({ default: '10kg' })
+  propertyValue?: string;
+
+  @Column({ default: 3 })
+  rating?: number;
+
   @Column('decimal')
   price: number;
 
