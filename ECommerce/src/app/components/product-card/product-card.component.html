@@ -1,4 +1,4 @@
-<div class="column wrapper">
+<div class="column wrapper" (mouseenter)="op.show($event)" (mouseleave)="op.hide()">
   <!-- Product Thumbnail -->
   <img src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" alt="Product Thumbnail" />
 
@@ -20,3 +20,25 @@
 
   </div>
 </div>
+
+<p-overlayPanel #op>
+  <div>
+    <h1>test</h1>
+  </div>
+  <div>
+    <h1>test</h1>
+  </div>
+  <div>
+    <h1>test</h1>
+  </div>
+  <div>
+    <h1>test</h1>
+  </div>
+  <div>
+    <h1>test</h1>
+  </div>
+  <div>
+    <h1>test</h1>
+  </div>
+
+</p-overlayPanel>
