@@ -42,10 +42,35 @@ export class ProductService {
     }
     async create(): Promise<Product[]> {
         const products = [
-            { name: 'Product A', price: 10.99, stock: 100 },
-            { name: 'Product B', price: 20.49, stock: 50 },
-            { name: 'Product C', price: 5.99, stock: 200 },
-            { name: 'Product D', price: 15.00, stock: 75 },
+            { name: 'Product A Product A', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product B Product B', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product C Product C', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product D Product D', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product E Product E', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product F Product F', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product G Product G', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 1 Product 1', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 2 Product 2', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 3 Product 3', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 4 Product 4', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 5 Product 5', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 6 Product 6', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 7 Product 7', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product A Product A', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product B Product B', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product C Product C', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product D Product D', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product E Product E', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product F Product F', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product G Product G', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 1 Product 1', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 2 Product 2', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 3 Product 3', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 4 Product 4', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 5 Product 5', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 6 Product 6', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+            { name: 'Product 7 Product 7', sku: '', trademark: '', width: 5, length: 10, height: 15, manufacturer: 'Vietnam', rating: 4, price: 10.99, stock: 100 },
+
         ];
 
         return await this.productRepository.save(products);

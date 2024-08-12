@@ -1,6 +1,39 @@
-<div class="flex-column">
+<div class="row">
+  <div class="main-left column gap-1">
     <app-search></app-search>
-    <div>
-        <p>home works!</p>
+    <!-- Products Section -->
+    <div class="row wrap gap-2 space-around">
+      <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
     </div>
+
+    <!-- Paginator -->
+    <p-paginator [rows]="queryParams.limit" [first]="1" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 20]"
+      (onPageChange)="onPageChange($event)" #paginator></p-paginator>
+  </div>
+  <!-- sidebar -->
+  <div class="sidebar-actions column align-center gap-2">
+    <i class="pi pi-shopping-cart active" (click)="showSidebar()"></i>
+    <i class="pi pi-heart"></i>
+    <i class="pi pi-tags"></i>
+    <i class="pi pi-twitch"></i>
+
+  </div>
 </div>
+
+<p-sidebar [(visible)]="isSidebarVisible" position="right" class="home-sidebar">
+
+  <div class="row ">
+    <div class="actions-left column align-center gap-2">
+      <i class="pi pi-shopping-cart active"></i>
+      <i class="pi pi-heart"></i>
+      <i class="pi pi-tags"></i>
+      <i class="pi pi-twitch"></i>
+    </div>
+
+    <div class="row">
+      <div class="main-left column gap-1">
+
+      </div>
+    </div>
+  </div>
+</p-sidebar>

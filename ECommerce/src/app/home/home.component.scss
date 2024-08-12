@@ -1,0 +1,37 @@
+.sidebar-actions{
+  position: fixed;
+  background-color: white;
+  right: 0;
+  top:0;
+  height: 100vh;
+  width: 70px;
+  padding-top: 15px;
+}
+
+i{
+  cursor: pointer;
+  font-size: x-large;
+}
+.active{
+  color:#FFC107;
+}
+
+.main-left{
+  margin-right: 50px;
+}
+
+.add-product-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    box-shadow: 0 0 10px 2.5px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  .home-sidebar{
+    .actions-left{
+      width: 70px;
+      border-right: 1px solid rgb(243, 237, 237);
+    }
+  }

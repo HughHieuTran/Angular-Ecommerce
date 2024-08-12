@@ -22,7 +22,8 @@ import { OrderService } from './services/order/order.service';
     password: 'admin',
     database: 'final',
     entities: [User, Product, Order, OrderItem],
-    synchronize: true
+    synchronize: true,
+    logging: true
   }),
   TypeOrmModule.forFeature([User, Product, Order, OrderItem]),
   ],

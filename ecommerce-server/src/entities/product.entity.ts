@@ -26,7 +26,7 @@ export class Product {
   manufacturer?: string;
 
   @Column({ default: 'weight' })
-  propertyName?: number;
+  propertyName?: string;
 
   @Column({ default: '10kg' })
   propertyValue?: string;
@@ -39,6 +39,9 @@ export class Product {
 
   @Column({ default: 0 })
   stock: number;
+
+  @Column({default:'assets/images/products/image1.jpg'})
+  image: string;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
   orderItems: OrderItem[];

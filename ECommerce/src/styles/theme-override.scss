@@ -6,3 +6,21 @@
 input.ng-invalid {
     border: 1px solid red;
 }
+
+.p-sidebar-header {
+    display: none;
+}
+
+.p-sidebar-content {
+    padding-left: 0;
+    padding-top: 10px;
+    
+}
+.p-sidebar-right{
+    width: 500px;
+    box-shadow: 15px;
+}
+
+.p-paginator{
+    background-color: rgb(247, 243, 243);
+}

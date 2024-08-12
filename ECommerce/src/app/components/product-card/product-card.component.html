@@ -1,1 +1,22 @@
-<p>product-card works!</p>
+<div class="column wrapper">
+  <!-- Product Thumbnail -->
+  <img src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" alt="Product Thumbnail" />
+
+  <!-- Product Name -->
+  <h3 class="title">{{ product.name }}</h3>
+  <!-- Product Rating (PrimeNg rating component) -->
+  <div class="rating">
+    <p-rating [(ngModel)]="product.rating" [readonly]="true" iconCancelClass="hidden"></p-rating>
+  </div>
+
+  <!-- Product Price -->
+  <div class="row">
+    <span class="price">{{ product.price }}</span>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="row btn-row">
+    <button type="button" pButton icon="pi pi-plus" (click)="addProductToCart()" [rounded]="true"></button>
+
+  </div>
+</div>
