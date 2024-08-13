@@ -40,8 +40,8 @@ export interface Order {
 
 export interface OrderItem {
     id: number;
-    order: Order;
-    product: Product;
+    order?: Order |undefined;
+    product?: Product | undefined;
     quantity: number;
     totalPrice: number;
 }

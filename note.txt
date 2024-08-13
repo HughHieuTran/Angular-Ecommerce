@@ -1,0 +1,46 @@
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { OrderItem } from '../types/types';
+import { selectCartItems } from './store/cart.selectors';
+import { addItem, removeItem, updateItem } from './store/cart.actions';
+
+
+
+  private store = inject(Store);
+  cartItems$: Observable<OrderItem[]>;
+
+  constructor() {
+    this.cartItems$ = this.store.pipe(select(selectCartItems));
+  }
+  id = 1;
+  addItem() {
+    const item: OrderItem = { id: this.id++, quantity: 1, totalPrice: 5 };
+    this.store.dispatch(addItem({ item }));
+  }
+
+  removeItem() {
+    console.log(this.cartItems$);
+    this.store.dispatch(removeItem({ id:--this.id }));
+  }
+
+  updateItem() {
+    console.log(this.cartItems$);
+    const item: OrderItem = { id: this.id-1, quantity: 10, totalPrice: 50 };
+    this.store.dispatch(updateItem({ item }));
+  }
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+<ul>
+        <li *ngFor="let item of ( cartItems$ | async )">
+            {{item.id}} == {{item.totalPrice}} = {{item.quantity}}
+        </li>
+    </ul>
+    <div>
+        <button (click)="addItem()">increase</button>
+        <button (click)="removeItem()">decrease</button>
+        <button (click)="updateItem()">update</button>
+    </div>

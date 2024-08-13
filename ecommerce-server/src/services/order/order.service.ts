@@ -30,21 +30,31 @@ export class OrderService {
         @InjectRepository(Product)
         private readonly productRepository: Repository<Product>,
     ) { }
-    async create(createOrderDto: CreateOrderDto): Promise<Order> {
+    async createOrUpdate(createOrderDto: CreateOrderDto): Promise<Order> {
         const { email, orderDate, orderItems } = createOrderDto;
 
         const user = await this.userRepository.findOneBy({ email: email });
         if (!user) {
             throw new Error('User not found');
         }
-
-
-        const order = this.orderRepository.create({
-            orderDate,
-            user,
-            orderItems: [],
-        });
-
+        let order: Order = new Order();
+        const oldOrder = await this.orderRepository.find({ where: { user, IsOrdered: false }, relations: ['orderItems', 'user'] });
+        if (oldOrder.length > 0) {
+            order = oldOrder[0];
+            order.orderDate = orderDate;
+            order.orderItems.forEach(element => {
+                this.orderItemRepository.remove(element);
+            });
+            this.orderItemRepository.save(order.orderItems);
+        } else {
+            order = this.orderRepository.create({
+                orderDate,
+                user,
+                orderItems: [],
+                IsOrdered: false
+            });
+        }
+        order.orderItems = [];
         for (const item of orderItems) {
             const product = await this.productRepository.findOneBy({ id: item.productId });
             if (!product) {
@@ -65,15 +75,22 @@ export class OrderService {
             order.orderItems.push(orderItem);
         }
 
-
         return this.orderRepository.save(order);
     }
+
     async findOrdersByEmail(email: string): Promise<Order[]> {
         const user = await this.userRepository.findOneBy({ email });
         if (!user) {
             throw new Error('User not found');
         }
-        return this.orderRepository.find({ where: { user }, relations: ['orderItems', 'user'] });
+        return this.orderRepository.find({ where: { user, IsOrdered: false }, relations: ['orderItems', 'user'] });
+    }
+    async findHistoryOrdersByEmail(email: string): Promise<Order[]> {
+        const user = await this.userRepository.findOneBy({ email });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return this.orderRepository.find({ where: { user, IsOrdered: true }, relations: ['orderItems', 'user'] });
     }
     async getAllOrders(): Promise<Order[]> {
         return (await this.orderRepository.find({ relations: ['orderItems', 'user'] }));

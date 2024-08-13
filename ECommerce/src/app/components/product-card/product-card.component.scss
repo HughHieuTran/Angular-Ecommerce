@@ -42,3 +42,28 @@
   }
   
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Makes borders between cells collapse into a single border */
+}
+
+th, td {
+  padding-left: 18px; /* Padding inside cells */
+  padding-right: 18px; /* Padding inside cells */
+  padding-bottom: 8px; /* Padding inside cells */
+  padding-top: 8px; /* Padding inside cells */
+  text-align: left; /* Align text to the left */
+}
+
+th {
+  background-color: #c1ee1f; /* Light gray background for header */
+}
+
+tr:nth-child(odd) {
+  background-color: #f9f9f9c9; /* Light background color for even rows */
+}
+
+tr:nth-child(even) {
+  background-color: #ffffff; /* White background color for odd rows */
+}

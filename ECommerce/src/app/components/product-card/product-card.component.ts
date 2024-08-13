@@ -8,10 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { Overlay } from 'primeng/overlay';
+import { TableModule } from 'primeng/table';
+
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule, RatingModule, FormsModule, OverlayPanelModule],
+  imports: [CommonModule, CardModule, ButtonModule, RatingModule, FormsModule, OverlayPanelModule,TableModule],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss'
 })

@@ -10,12 +10,16 @@ export class Order {
   @Column()
   orderDate: string;
 
+  @Column({ default: false })
+  IsOrdered: boolean;
+
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order,{
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     cascade: true,
-    onDelete: 'CASCADE' 
+    onDelete: 'CASCADE'
   })
   orderItems: OrderItem[];
+
 }

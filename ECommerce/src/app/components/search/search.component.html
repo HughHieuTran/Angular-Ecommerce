@@ -1,6 +1,6 @@
 <div class="wrapper">
     <p-iconField iconPosition="right" >
         <p-inputIcon styleClass="pi pi-search" />
-        <input  type="text" pInputText placeholder="Search"  />
+        <input type="text" pInputText placeholder="Search" (input)="onSearchInputChange($event)"  />
     </p-iconField>
 </div>
