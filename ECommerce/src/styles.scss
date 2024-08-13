@@ -1,4 +1,3 @@
-
 @import "./styles/variables.scss";
 @import "./styles/theme-override.scss";
 @import "primeicons/primeicons.css";
@@ -28,9 +27,20 @@ app-root {
   flex-direction: column;
 }
 
+.w-full {
+  width: 100%;
+}
+
 .row {
   display: flex;
   flex-direction: row;
+}
+
+.row-start {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: start;
 }
 
 .column {
@@ -73,9 +83,11 @@ app-root {
 .space-between {
   justify-content: space-between;
 }
+
 .space-around {
   justify-content: space-around;
 }
+
 .align-center {
   align-items: center;
 }
