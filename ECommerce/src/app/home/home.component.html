@@ -12,7 +12,7 @@
   </div>
   <!-- sidebar -->
   <div class="sidebar-actions column align-center gap-2 shadow-md">
-    <i class="pi pi-shopping-cart active" (click)="showSidebar()"></i>
+    <i class="pi pi-shopping-cart active" pBadge [value]="(totalCartQuantity$ | async)??0" (click)="showSidebar()"></i>
     <i class="pi pi-heart"></i>
     <i class="pi pi-tags"></i>
     <i class="pi pi-twitch"></i>
@@ -22,18 +22,43 @@
 
 <p-sidebar [(visible)]="isSidebarVisible" position="right" class="home-sidebar">
 
-  <div class="row ">
+  <div class="row " style="margin-top: 10px;">
     <div class="actions-left column align-center gap-2">
-      <i class="pi pi-shopping-cart active"></i>
+      <i class="pi pi-shopping-cart active" pBadge [value]="(totalCartQuantity$ | async)??0"></i>
       <i class="pi pi-heart"></i>
       <i class="pi pi-tags"></i>
       <i class="pi pi-twitch"></i>
     </div>
 
-    <div class="row">
-      <div class="main-left column gap-1">
+    <div class="column w-full gap-1 orderlist">
+      <div class="cart-title">
+        <h1>Cart</h1>
+      </div>
+      <div class="row gap-1 cart-item space-between" *ngFor="let item of cartItems$ |async">
+        <img [src]="item.product?.image" [alt]="item.product?.name">
+        <div class="column gap-05">
+          <p>{{item.product?.name}}</p>
 
+          <p-inputNumber [(ngModel)]="item.quantity" [showButtons]="true" buttonLayout="horizontal"
+            spinnerMode="vertical" inputId="vertical" decrementButtonClass="p-button-secondary"
+            incrementButtonClass="p-button-secondary" incrementButtonIcon="pi pi-plus"
+            decrementButtonIcon="pi pi-minus" />
+
+        </div>
+        <div class="column full-center gap-05">
+          <p>{{item.totalPrice}} $</p>
+          <p-button label="Delete" [outlined]="true" severity="success" size="small" (onClick)="deleteProduct(item.product?.id)" />
+        </div>
+      </div>
+      <div class="row space-between w-90 align-center">
+        <h3>Total</h3>
+        <h2 style="color: red;">xxxxxxxxx</h2>
+      </div>
+      <div class="w-90 full-center row">
+        <a style="font-weight: 800; font-size: large;" href="cart-details">View Cart Details</a>
       </div>
     </div>
   </div>
 </p-sidebar>
+
+<p-toast position="bottom-right" />

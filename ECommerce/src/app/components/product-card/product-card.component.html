@@ -1,6 +1,6 @@
 <div class="column wrapper shadow-md" (mouseenter)="op.show($event)" (mouseleave)="op.hide()">
   <!-- Product Thumbnail -->
-  <img src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" alt="Product Thumbnail" />
+  <img [src]="product.image" alt="Product Thumbnail" />
 
   <!-- Product Name -->
   <h3 class="title">{{ product.name }}</h3>
@@ -16,7 +16,8 @@
 
   <!-- Action buttons -->
   <div class="row btn-row">
-    <button type="button" pButton icon="pi pi-plus" (click)="addProductToCart()" [rounded]="true"></button>
+    <button type="button" pButton icon="pi pi-plus" (click)="addProductToCart()" [rounded]="true"
+      [disabled]="product.stock<=0"></button>
 
   </div>
 </div>
@@ -50,3 +51,5 @@
   </table>
 
 </p-overlayPanel>
+
+<p-toast position="bottom-right" />

@@ -15,5 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideStore(reducers, { metaReducers }),
     provideAnimations(),
-    provideHttpClient(withFetch())]
+    provideHttpClient(withFetch()),
+    
+  ]
+
 };

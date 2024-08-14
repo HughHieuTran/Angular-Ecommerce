@@ -45,3 +45,20 @@ export interface OrderItem {
     quantity: number;
     totalPrice: number;
 }
+
+export interface OrderDto {
+    orderDate: string;
+    email: string;
+    orderItems: OrderItemDto[];
+}
+
+export interface OrderItemDto {
+    productId: number;
+    quantity: number;
+}
+
+export interface updateORderItemDto {
+    email: string;
+    productId: number;
+    quantity: number;
+}

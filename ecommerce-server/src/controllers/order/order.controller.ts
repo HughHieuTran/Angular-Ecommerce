@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Order } from 'src/entities/order.entity';
-import { CreateOrderDto, OrderService } from 'src/services/order/order.service';
+import { CreateOrderDto, OrderService, updateORderItemDto } from 'src/services/order/order.service';
 
 @Controller('order')
 export class OrderController {
@@ -12,12 +12,29 @@ export class OrderController {
 
   @Get()
   async getAllOrders(): Promise<Order[]> {
-    return this.ordersService.getAllOrders();
+    try{
+
+      return this.ordersService.getAllOrders();
+    }catch{}
+  }
+
+  @Get('history/:email')
+  async getAllOrdersByEmail(@Param('email') email: string): Promise<Order[]> {
+    return this.ordersService.findHistoryOrdersByEmail(email);
   }
 
   @Get(':email')
-  async getAllOrdersByEmail(@Param('email') email: string): Promise<Order[]> {
-    return this.ordersService.findOrdersByEmail(email);
+  async getCart(@Param('email') email: string): Promise<Order[]> {
+    return this.ordersService.findCartByEmail(email);
+  }
+
+  @Post("update")
+  async updateCartItems(@Body() createorderi: updateORderItemDto): Promise<Order> {
+    return this.ordersService.updateOrderItems(createorderi);
+  }
+  @Post("add")
+  async addToCartItems(@Body() createorderi: updateORderItemDto): Promise<Order> {
+    return this.ordersService.addOrderItems(createorderi);
   }
 
   @Delete()

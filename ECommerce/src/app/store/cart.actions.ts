@@ -2,17 +2,7 @@
 import { createAction, props } from '@ngrx/store';
 import { OrderItem as CartItem } from '../../types/types';
 
-export const addItem = createAction(
-    '[Cart] Add Item',
-    props<{ item: CartItem }>()
-);
 
-export const removeItem = createAction(
-    '[Cart] Remove Item',
-    props<{ id: number }>()
-);
-
-export const updateItem = createAction(
-    '[Cart] Update Item',
-    props<{ item: CartItem }>()
-);
+export const loadCartItems = createAction('[Cart] Load Cart Items');
+export const loadCartItemsSuccess = createAction('[Cart] Load Cart Items Success', props<{ items: CartItem[] }>());
+export const loadCartItemsFailure = createAction('[Cart] Load Cart Items Failure', props<{ error: any }>());
