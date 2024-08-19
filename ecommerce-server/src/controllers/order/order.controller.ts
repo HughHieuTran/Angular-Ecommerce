@@ -12,10 +12,10 @@ export class OrderController {
 
   @Get()
   async getAllOrders(): Promise<Order[]> {
-    try{
+    try {
 
       return this.ordersService.getAllOrders();
-    }catch{}
+    } catch { }
   }
 
   @Get('history/:email')
@@ -35,6 +35,11 @@ export class OrderController {
   @Post("add")
   async addToCartItems(@Body() createorderi: updateORderItemDto): Promise<Order> {
     return this.ordersService.addOrderItems(createorderi);
+  }
+
+  @Post('pay/:email')
+  async payOrder(@Param('email') email: string): Promise<boolean> {
+    return this.ordersService.payOrder(email);
   }
 
   @Delete()

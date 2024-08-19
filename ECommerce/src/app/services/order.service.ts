@@ -23,4 +23,8 @@ export class OrderService {
   addToCart(orderDto: updateORderItemDto): Observable<Order> {
     return this.http.post<Order>(this.link + 'order/add', orderDto);
   }
+
+  payOrder(email: string): Observable<boolean> {
+    return this.http.post<boolean>(this.link + 'order/pay/' + email, {});
+  }
 }

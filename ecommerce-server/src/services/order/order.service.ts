@@ -4,6 +4,7 @@ import { Order } from 'src/entities/order.entity';
 import { OrderItem } from 'src/entities/orderItem.entity';
 import { Product } from 'src/entities/product.entity';
 import { User } from 'src/entities/user.entity';
+import { roundNumber } from 'src/lib';
 import { Repository } from 'typeorm';
 
 export interface CreateOrderItemDto {
@@ -124,6 +125,7 @@ export class OrderService {
             }
             else {
                 order.orderItems.find(x => x.product.id == productId).quantity = quantity;
+                order.orderItems.find(x => x.product.id == productId).totalPrice = roundNumber(product.price * quantity, 12);
             }
         } else {
             const orderItem = this.orderItemRepository.create({
@@ -179,6 +181,7 @@ export class OrderService {
             }
             else {
                 order.orderItems.find(x => x.product.id == productId).quantity = oldQuantity + quantity;
+                order.orderItems.find(x => x.product.id == productId).totalPrice = roundNumber(product.price * (oldQuantity + quantity), 12);
             }
         } else {
             const orderItem = this.orderItemRepository.create({
@@ -221,5 +224,20 @@ export class OrderService {
                 this.orderRepository.remove(order);
             })
         } catch { }
+    }
+    async payOrder(email: string): Promise<boolean> {
+        try {
+            const user = await this.userRepository.findOneBy({ email: email });
+
+            const order = await this.orderRepository.find({ where: { user, IsOrdered: false }, relations: ['orderItems', 'orderItems.product', 'user'] });
+
+            if (order.length>0) {
+                order[0].IsOrdered = true;
+                await this.orderRepository.save(order);
+                return true;
+            }
+        } catch { }
+
+        return false;
     }
 }

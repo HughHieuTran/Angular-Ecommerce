@@ -16,7 +16,7 @@ h4 {
   box-sizing: border-box;
 }
 
-a{
+a {
   text-decoration: none;
 }
 
@@ -34,7 +34,8 @@ app-root {
 .w-full {
   width: 100%;
 }
-.w-90{
+
+.w-90 {
   width: 90%;
 }
 
@@ -55,6 +56,10 @@ app-root {
   flex-direction: column;
 }
 
+.p-15 {
+  padding: 15px;
+}
+
 .mt-15 {
   margin-top: 15px;
 }
@@ -70,7 +75,9 @@ app-root {
 .mb-25 {
   margin-bottom: 25px;
 }
-
+.mr-25{
+  margin-right: 25px;
+}
 .wrap {
   flex-wrap: wrap;
 }
@@ -127,4 +134,12 @@ app-root {
 
 .shadow-xl {
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.font-bold {
+  font-weight: 800;
+}
+
+.font-red {
+  color: red
 }

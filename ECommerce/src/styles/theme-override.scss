@@ -22,5 +22,14 @@ input.ng-invalid {
 }
 
 .p-paginator{
-    background-color: rgb(247, 243, 243);
+    background-color: rgb(255, 255, 255);
+}
+
+i{
+    position: relative;
+    p-badge{
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+    }
 }

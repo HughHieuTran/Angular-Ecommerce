@@ -1,8 +1,12 @@
 <div class="row w-full">
+  @if (isProductLoading) {
+  <p-progressSpinner ariaLabel="loading" />
+  }
+  @else {
   <div class="main-left column gap-1 w-full">
     <app-search (searchOutputEvent)="getProductsWithSearch($event)"></app-search>
     <!-- Products Section -->
-    <div class="row-start wrap gap-2 w-full">
+    <div class="row-start wrap gap-2 w-full space-around">
       <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
     </div>
 
@@ -10,6 +14,7 @@
     <p-paginator [rows]="queryParams.limit" [first]="1" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 20]"
       (onPageChange)="onPageChange($event)" #paginator></p-paginator>
   </div>
+  }
   <!-- sidebar -->
   <div class="sidebar-actions column align-center gap-2 shadow-md">
     <i class="pi pi-shopping-cart active" pBadge [value]="(totalCartQuantity$ | async)??0" (click)="showSidebar()"></i>
@@ -24,7 +29,9 @@
 
   <div class="row " style="margin-top: 10px;">
     <div class="actions-left column align-center gap-2">
-      <i class="pi pi-shopping-cart active" pBadge [value]="(totalCartQuantity$ | async)??0"></i>
+      <i class="pi pi-shopping-cart active">
+        <p-badge [value]="(totalCartQuantity$ | async)??''"></p-badge>
+      </i>
       <i class="pi pi-heart"></i>
       <i class="pi pi-tags"></i>
       <i class="pi pi-twitch"></i>
@@ -34,31 +41,42 @@
       <div class="cart-title">
         <h1>Cart</h1>
       </div>
-      <div class="row gap-1 cart-item space-between" *ngFor="let item of cartItems$ |async">
+      @if ((totalCartQuantity$|async) ===0) {
+      <div class="cart-empty-message">
+        <p>You haven't booked any products yet, book now before the promotion ends!</p>
+      </div>
+      }
+      @else {
+
+
+      <div class="row gap-1 cart-item space-between" *ngFor="let item of cartItems$ |async as cartItems$">
         <img [src]="item.product?.image" [alt]="item.product?.name">
         <div class="column gap-05">
           <p>{{item.product?.name}}</p>
 
-          <p-inputNumber [(ngModel)]="item.quantity" [showButtons]="true" buttonLayout="horizontal"
-            spinnerMode="vertical" inputId="vertical" decrementButtonClass="p-button-secondary"
-            incrementButtonClass="p-button-secondary" incrementButtonIcon="pi pi-plus"
-            decrementButtonIcon="pi pi-minus" />
+          <div class="input-number">
+            <button class="btn-left" (click)="reduceItemQuantity(item.product?.id??0)">-</button>
+            <input type="number" [value]="item.quantity"
+              (change)="updateCartItemQuantity($event, item.product?.id??0)" />
+            <button class="btn-right" (click)="addItemQuantity(item.product?.id??0)">+</button>
+          </div>
 
         </div>
         <div class="column full-center gap-05">
-          <p>{{item.totalPrice}} $</p>
-          <p-button label="Delete" [outlined]="true" severity="success" size="small" (onClick)="deleteProduct(item.product?.id)" />
+          <p>{{item.totalPrice}} VNĐ</p>
+          <p-button label="Delete" [outlined]="true" severity="success" size="small"
+            (onClick)="deleteProduct(item.product?.id,item.quantity)" />
         </div>
+
       </div>
       <div class="row space-between w-90 align-center">
         <h3>Total</h3>
-        <h2 style="color: red;">xxxxxxxxx</h2>
+        <h2 style="color: red;">{{(totalCartPrice$|async)??0}} VNĐ</h2>
       </div>
       <div class="w-90 full-center row">
         <a style="font-weight: 800; font-size: large;" href="cart-details">View Cart Details</a>
       </div>
+      }
     </div>
   </div>
 </p-sidebar>
-
-<p-toast position="bottom-right" />

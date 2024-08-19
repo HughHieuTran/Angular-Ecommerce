@@ -1,1 +1,59 @@
-<p>cart-detail works!</p>
+<div class="w-90" style="margin: auto;">
+    <h2 class="cart-title p-25">CART</h2>
+
+</div>
+<div class="row w-90 " style="margin: auto;">
+
+
+    <div class="col orderlist">
+        @if ((totalCartQuantity$|async) ===0) {
+        <div class="cart-empty-message">
+            <p>You haven't booked any products yet, book now before the promotion ends!</p>
+        </div>
+
+        }
+        @else
+        {
+        <div class="row gap-1 cart-item space-between" *ngFor="let item of cartItems$ |async as cartItems$">
+            <div class="row gap-2 full-center p-15 ">
+                <img class="mr-25" [src]="item.product?.image" [alt]="item.product?.name">
+                <div class="column gap-05">
+                    <p class="font-bold">{{item.product?.name}}</p>
+                    <p class="font-red">Price: {{item.product?.price}} VND</p>
+
+                    <div class="input-number">
+                        <button class="btn-left" (click)="reduceItemQuantity(item.product?.id??0)">-</button>
+                        <input type="number" [value]="item.quantity"
+                            (change)="updateCartItemQuantity($event, item.product?.id??0)" />
+                        <button class="btn-right" (click)="addItemQuantity(item.product?.id??0)">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="column space-around align-center gap-05 mr-25">
+                <p class="small-price">{{item.totalPrice}} VNĐ</p>
+                <p-button label="Delete" [outlined]="true" severity="success" size="small"
+                    (onClick)="deleteProduct(item.product?.id)" />
+            </div>
+        </div>
+        }
+    </div>
+
+
+    <div class="col cart-actions ">
+        <div class="row total-price-block space-between align-center">
+            <h3>TOTAL</h3>
+            <h2>{{totalCartPrice$ | async}} VND</h2>
+        </div>
+
+        <div>
+            <p-button label="PAY" severity="danger"
+                [style]="{'width':'100%','border-radius':'10px','margin-bottom':'10px','color':'white'}" size="large"
+                (onClick)="pay_onClick()" [disabled]="(totalCartQuantity$|async) ===0" />
+        </div>
+
+        <div>
+            <p-button label="Buy more" severity="warning" [outlined]="true"
+                [style]="{'width':'100%','border-radius':'10px'}" size="large" (onClick)="buyMore_onClick()" />
+        </div>
+    </div>
+</div>

@@ -52,9 +52,51 @@ i {
     width: 90%;
     border-bottom: 1px solid rgb(240, 230, 230);
   }
-  .cart-title{
+
+  .cart-title {
     border-bottom: 1px solid rgb(240, 230, 230);
     padding-bottom: 10px;
     width: 90%;
   }
+}
+
+.input-number {
+  button {
+    font-weight: 500;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid rgb(211, 202, 202);
+  }
+
+  button:hover {
+    background-color: rgb(230, 216, 216);
+  }
+
+  input {
+    padding: 10px;
+    width: 100px;
+    border-top: 1px solid rgb(211, 202, 202);
+    border-bottom: 1px solid rgb(211, 202, 202);
+    border-left: 0px;
+    border-right: 0px;
+  }
+
+  .btn-left {
+    border-radius: 10px 0px 0px 10px;
+  }
+
+  .btn-right {
+    border-radius: 0px 10px 10px 0px;
+  }
+
+}
+
+.cart-empty-message{
+  padding: 20px;
+  background-color: rgb(235, 245, 235);
+  color: red;
+  border: 1px solid orange;
+  font-weight: 700;
+  width: 80%;
+  border-radius: 10px;
 }

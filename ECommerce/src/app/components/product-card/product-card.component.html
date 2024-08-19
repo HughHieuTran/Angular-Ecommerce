@@ -1,4 +1,8 @@
-<div class="column wrapper shadow-md" (mouseenter)="op.show($event)" (mouseleave)="op.hide()">
+<div style="position: relative;" class="column wrapper shadow-md" (mouseenter)="op.show($event)"
+  (mouseleave)="op.hide()">
+  <div [ngClass]="['stock-flag', isStockAvailable? '':'out-of-stock']  ">
+    {{isStockAvailable ? 'Available' : 'Out of stock'}}
+  </div>
   <!-- Product Thumbnail -->
   <img [src]="product.image" alt="Product Thumbnail" />
 
@@ -17,7 +21,7 @@
   <!-- Action buttons -->
   <div class="row btn-row">
     <button type="button" pButton icon="pi pi-plus" (click)="addProductToCart()" [rounded]="true"
-      [disabled]="product.stock<=0"></button>
+      [disabled]="!isStockAvailable || isAdding"></button>
 
   </div>
 </div>
@@ -51,5 +55,3 @@
   </table>
 
 </p-overlayPanel>
-
-<p-toast position="bottom-right" />
