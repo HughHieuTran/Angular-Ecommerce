@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { SearchComponent } from '../components/search/search.component';
 import { ProductService } from '../services/product.service';
-import { Order, OrderItem, Product, ProductQueryParams } from '../../types/types';
+import { Order, OrderItem, Product, ProductQueryParams, Products } from '../../types/types';
 import { ProductCardComponent } from "../components/product-card/product-card.component";
 import { CommonModule } from '@angular/common';
 import { Paginator, PaginatorModule } from 'primeng/paginator';
@@ -18,10 +18,11 @@ import { MessageService } from 'primeng/api';
 import { roundNumber } from '../lib';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { PriceFormatterPipe } from '../pipe/price-formatter.pipe';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SearchComponent, ProductCardComponent, CommonModule, PaginatorModule, SidebarModule, BadgeModule, ButtonModule, ToastModule, InputNumberModule, ProgressSpinnerModule],
+  imports: [SearchComponent, ProductCardComponent, CommonModule, PaginatorModule, SidebarModule, BadgeModule, ButtonModule, ToastModule, InputNumberModule, ProgressSpinnerModule, PriceFormatterPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -64,13 +65,15 @@ export class HomeComponent {
   getProducts() {
     this.isProductLoading = true;
     this.productService.getAllProducts(this.queryParams).subscribe({
-      next: (data: Product[]) => {
-        data.sort((a, b) => a.id - b.id)
-        this.products = data;
+      next: (data: Products) => {
+        this.products = data.products;
+        this.products.sort((a, b) => a.id - b.id)
+        this.totalRecords = data.total;
+        this.isProductLoading = false;
       },
-      error: (error) => console.log(error)
+      error: (error) => { console.log(error); this.isProductLoading = false; }
     });
-    this.isProductLoading = false;
+
   }
   private loadCartItems() {
     this.orderService.getCart('admin@gmail.com').subscribe({
@@ -95,22 +98,23 @@ export class HomeComponent {
   deleteProduct(id: number | undefined, quantity: number) {
     if (id == undefined) return;
     const product = this.products.find((x) => x.id === id);
-    if (product) {
-      this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity: 0 }).subscribe({
-        next: (order: Order) => {
-          let orderItems: OrderItem[] = [];
-          if (order) orderItems = order.orderItems
-          orderItems.sort((a, b) => a.id - b.id);
+    this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity: 0 }).subscribe({
+      next: (order: Order) => {
+        let orderItems: OrderItem[] = [];
+        if (order) orderItems = order.orderItems
+        orderItems.sort((a, b) => a.id - b.id);
+        if (product) {
           product.stock += quantity;
-          this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
-          this.showSuccess();
-        },
-        error: (error) => {
-          this.store.dispatch(loadCartItemsFailure({ error }));
-          this.showError(error);
         }
-      });
-    }
+        this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+        this.showSuccess();
+      },
+      error: (error) => {
+        this.store.dispatch(loadCartItemsFailure({ error }));
+        this.showError(error);
+      }
+    });
+
   }
   showSuccess() {
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cart item was updated successfully' });
@@ -121,63 +125,68 @@ export class HomeComponent {
 
   reduceItemQuantity(id: number) {
     const product = this.products.find((x) => x.id === id);
-    if (product) {
-      this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: -1 }).subscribe({
-        next: (order: Order) => {
-          let orderItems: OrderItem[] = [];
-          if (order) orderItems = order.orderItems
-          orderItems.sort((a, b) => a.id - b.id);
-          this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+
+    this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: -1 }).subscribe({
+      next: (order: Order) => {
+        let orderItems: OrderItem[] = [];
+        if (order) orderItems = order.orderItems
+        orderItems.sort((a, b) => a.id - b.id);
+        this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+        if (product) {
           product.stock += 1;
-          this.showSuccess();
-        },
-        error: (error) => {
-          this.store.dispatch(loadCartItemsFailure({ error }));
-          this.showError(error);
         }
-      });
-    }
+        this.showSuccess();
+      },
+      error: (error) => {
+        this.store.dispatch(loadCartItemsFailure({ error }));
+        this.showError(error);
+      }
+    });
+
   }
   addItemQuantity(id: number) {
     const product = this.products.find((x) => x.id === id);
-    if (product && product.stock - 1 > 0) {
-      this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: 1 }).subscribe({
-        next: (order: Order) => {
-          let orderItems: OrderItem[] = [];
-          if (order) orderItems = order.orderItems
-          orderItems.sort((a, b) => a.id - b.id);
-          this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+
+    this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: 1 }).subscribe({
+      next: (order: Order) => {
+        let orderItems: OrderItem[] = [];
+        if (order) orderItems = order.orderItems
+        orderItems.sort((a, b) => a.id - b.id);
+        this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+        if (product && product.stock - 1 > 0) {
           product.stock -= 1;
-          this.showSuccess();
-        },
-        error: (error) => {
-          this.store.dispatch(loadCartItemsFailure({ error }));
-          this.showError(error);
+        } else {
+          this.showError('Product is out of stock');
+          return;
         }
-      });
-    } else {
-      this.showError('Product is out of stock');
-    }
+        this.showSuccess();
+      },
+      error: (error) => {
+        console.log(error);
+        this.store.dispatch(loadCartItemsFailure({ error }));
+        this.showError(error.error.message);
+      }
+    });
+
   }
   updateCartItemQuantity(event: any, id: number) {
     const quantity = event.target.value;
-    const product = this.products.find((x) => x.id === id);
-    if (product && product.stock - quantity > 0) {
-      this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity }).subscribe({
-        next: (order: Order) => {
-          let orderItems: OrderItem[] = [];
-          if (order) orderItems = order.orderItems
-          orderItems.sort((a, b) => a.id - b.id);
-          this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
-          this.showSuccess();
-        },
-        error: (error) => {
-          this.store.dispatch(loadCartItemsFailure({ error }));
-          this.showError(error);
-        }
-      });
-    } else {
-      this.showError('Product is out of stock');
-    }
+    this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity }).subscribe({
+      next: (order: Order) => {
+        let orderItems: OrderItem[] = [];
+        if (order) orderItems = order.orderItems
+        orderItems.sort((a, b) => a.id - b.id);
+        this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+        this.showSuccess();
+        this.getProducts();
+      },
+      error: (error) => {
+        this.store.dispatch(loadCartItemsFailure({ error }));
+        this.showError(error.error.message);
+        this.loadCartItems();
+        this.getProducts();
+      }
+    });
+    
   }
 }

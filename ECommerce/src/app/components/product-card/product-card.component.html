@@ -1,7 +1,7 @@
 <div style="position: relative;" class="column wrapper shadow-md" (mouseenter)="op.show($event)"
   (mouseleave)="op.hide()">
-  <div [ngClass]="['stock-flag', isStockAvailable? '':'out-of-stock']  ">
-    {{isStockAvailable ? 'Available' : 'Out of stock'}}
+  <div [ngClass]="['stock-flag', product.stock>0? '':'out-of-stock']  ">
+    {{product.stock>0 ? 'Available' : 'Out of stock'}}
   </div>
   <!-- Product Thumbnail -->
   <img [src]="product.image" alt="Product Thumbnail" />
@@ -15,13 +15,13 @@
 
   <!-- Product Price -->
   <div class="row">
-    <span class="price">{{ product.price }}</span>
+    <span class="price">{{ product.price | priceFormatter }}</span>
   </div>
 
   <!-- Action buttons -->
   <div class="row btn-row">
     <button type="button" pButton icon="pi pi-plus" (click)="addProductToCart()" [rounded]="true"
-      [disabled]="!isStockAvailable || isAdding"></button>
+      [disabled]="product.stock<=0 || isAdding"></button>
 
   </div>
 </div>

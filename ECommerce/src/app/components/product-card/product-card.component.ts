@@ -16,11 +16,12 @@ import { loadCartItemsFailure, loadCartItemsSuccess } from '../../store/cart.act
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
+import { PriceFormatterPipe } from '../../pipe/price-formatter.pipe';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule, RatingModule, FormsModule, OverlayPanelModule, TableModule, ToastModule, BadgeModule],
+  imports: [CommonModule, CardModule, ButtonModule, RatingModule, FormsModule, OverlayPanelModule, TableModule, ToastModule, BadgeModule, PriceFormatterPipe],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss',
 })
@@ -31,15 +32,16 @@ export class ProductCardComponent {
   private store = inject(Store);
   cartItems$: Observable<OrderItem[]> = this.store.pipe(select(selectCartItems));;
   error$: Observable<any> = this.store.select(state => state.cart.error);
-  isStockAvailable: boolean = false;
-  isAdding:boolean = false;
+  
+  isAdding: boolean = false;
   constructor(private orderService: OrderService, private messageService: MessageService) { }
 
   ngOnInit() {
-    this.isStockAvailable = this.product.stock > 0;
+    
   }
 
   async addProductToCart() {
+    
     this.isAdding = true;
     this.orderService.addToCart({ email: 'admin@gmail.com', productId: this.product.id, quantity: 1 }).subscribe({
       next: (order: Order) => {
@@ -48,13 +50,17 @@ export class ProductCardComponent {
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
         this.product.stock -= 1;
         this.showSuccess();
+        this.isAdding = false;
+        
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
         this.showError(error);
+        this.isAdding = false;
       }
     });
-    this.isAdding = false;
+    
+    
   }
 
   showSuccess() {

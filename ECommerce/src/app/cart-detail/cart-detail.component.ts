@@ -14,11 +14,12 @@ import { ToastModule } from 'primeng/toast';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { roundNumber } from '../lib';
 import { Router } from '@angular/router';
+import { PriceFormatterPipe } from '../pipe/price-formatter.pipe';
 
 @Component({
   selector: 'app-cart-detail',
   standalone: true,
-  imports: [CommonModule, InputNumberModule, ButtonModule, ToastModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, InputNumberModule, ButtonModule, ToastModule, ReactiveFormsModule, FormsModule,PriceFormatterPipe],
   templateUrl: './cart-detail.component.html',
   styleUrl: './cart-detail.component.scss'
 })

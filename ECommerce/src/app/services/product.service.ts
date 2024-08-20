@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { Product } from '../../types/types';
+import { Product, Products } from '../../types/types';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 export class ProductService {
   constructor(private http: HttpClient) { }
   link = "http://localhost:3000/";
-  getAllProducts(params?: { [key: string]: any }): Observable<Product[]> {
+  getAllProducts(params?: { [key: string]: any }): Observable<Products> {
     let httpParams = new HttpParams();
 
     if (params) {
@@ -18,6 +18,6 @@ export class ProductService {
         httpParams = httpParams.append(key, params[key]);
       });
     }
-    return this.http.get<Product[]>(this.link + 'product', { params: httpParams });
+    return this.http.get<Products>(this.link + 'product', { params: httpParams });
   }
 }

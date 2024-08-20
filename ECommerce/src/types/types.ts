@@ -62,3 +62,7 @@ export interface updateORderItemDto {
     productId: number;
     quantity: number;
 }
+export interface Products {
+    products: Product[];
+    total: number
+}

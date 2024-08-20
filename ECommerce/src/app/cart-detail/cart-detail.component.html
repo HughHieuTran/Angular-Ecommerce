@@ -19,7 +19,7 @@
                 <img class="mr-25" [src]="item.product?.image" [alt]="item.product?.name">
                 <div class="column gap-05">
                     <p class="font-bold">{{item.product?.name}}</p>
-                    <p class="font-red">Price: {{item.product?.price}} VND</p>
+                    <p class="font-red">Price: {{item.product?.price??0 | priceFormatter}}</p>
 
                     <div class="input-number">
                         <button class="btn-left" (click)="reduceItemQuantity(item.product?.id??0)">-</button>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="column space-around align-center gap-05 mr-25">
-                <p class="small-price">{{item.totalPrice}} VNĐ</p>
+                <p class="small-price">{{item.totalPrice | priceFormatter}}</p>
                 <p-button label="Delete" [outlined]="true" severity="success" size="small"
                     (onClick)="deleteProduct(item.product?.id)" />
             </div>
@@ -42,7 +42,7 @@
     <div class="col cart-actions ">
         <div class="row total-price-block space-between align-center">
             <h3>TOTAL</h3>
-            <h2>{{totalCartPrice$ | async}} VND</h2>
+            <h2>{{totalCartPrice$ | async | priceFormatter}}</h2>
         </div>
 
         <div>
