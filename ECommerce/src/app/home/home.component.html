@@ -1,12 +1,15 @@
 <div class="row w-full">
-  @if (isProductLoading) {
-  <p-progressSpinner ariaLabel="loading" />
-  }
-  @else {
+
   <div class="main-left column gap-1 w-full">
     <app-search (searchOutputEvent)="getProductsWithSearch($event)"></app-search>
     <!-- Products Section -->
+    @if (isProductLoading) {
+      <div class="w-full row full-center">
+        <p-progressSpinner ariaLabel="loading" />
 
+      </div>
+    }
+    @else {
     <div class="row full-center wrap gap-2 w-full ">
       <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
     </div>
@@ -15,8 +18,8 @@
     <!-- Paginator -->
     <p-paginator [rows]="queryParams.limit" [first]="1" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 20]"
       (onPageChange)="onPageChange($event)" #paginator></p-paginator>
+    }
   </div>
-  }
   <!-- sidebar -->
   <div class="sidebar-actions column align-center gap-2 shadow-md">
     <i class="pi pi-shopping-cart active" pBadge [value]="(totalCartQuantity$ | async)??0" (click)="showSidebar()"></i>

@@ -17,7 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideStore(reducers, { metaReducers }),
     provideAnimations(),
     provideHttpClient(withFetch()),
-    MessageService
+    MessageService,
+    
   ]
 
 };

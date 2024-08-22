@@ -1,8 +1,13 @@
-<div class="w-90" style="margin: auto;">
-    <h2 class="cart-title p-25">CART</h2>
-
+<div class="w-90 row align-center" style="margin: auto;">
+    <h2 [ngClass]="['cart-title p-25',activeSection =='cart'?'':'font-slim']" (click)="changeActiveSection('cart')">CART
+    </h2>
+    <h1 class="font-slim">|</h1>
+    <h2 [ngClass]="['cart-title p-25',activeSection =='history'?'':'font-slim']"
+        (click)="changeActiveSection('history')">HISTORY</h2>
 </div>
 <div class="row w-90 " style="margin: auto;">
+
+    @if (activeSection=='cart') {
 
 
     <div class="col orderlist">
@@ -37,7 +42,31 @@
         </div>
         }
     </div>
+    }
+    @else {
+    <div class="col orderlist">
+        @if ((oldOrders.length) ===0) {
+        <div class="cart-empty-message">
+            <p>You haven't booked any order!</p>
+        </div>
 
+        }
+        @else
+        {
+        <div class="row gap-1 cart-item space-between" *ngFor="let order of oldOrders ">
+            <div class="row gap-2 full-center p-15 ">
+                <div class="column gap-05">
+                    <p class="">{{order.orderDate| dateFormatter}}</p>
+                </div>
+            </div>
+            <div class="column space-around align-center gap-05 mr-25">
+                <p class="small-price">{{order.totalPrice??0| priceFormatter}}</p>
+
+            </div>
+        </div>
+        }
+    </div>
+    }
 
     <div class="col cart-actions ">
         <div class="row total-price-block space-between align-center">

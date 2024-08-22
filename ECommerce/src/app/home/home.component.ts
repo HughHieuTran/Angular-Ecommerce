@@ -60,14 +60,15 @@ export class HomeComponent {
   }
   getProductsWithSearch(searchText: string) {
     this.queryParams.name = searchText;
+    console.log(this.queryParams);
     this.getProducts();
   }
-  getProducts() {
+  async getProducts() {
     this.isProductLoading = true;
+    await new Promise(resolve => { console.log('wait 1s'); setTimeout(resolve, 500) });
     this.productService.getAllProducts(this.queryParams).subscribe({
       next: (data: Products) => {
         this.products = data.products;
-        this.products.sort((a, b) => a.id - b.id)
         this.totalRecords = data.total;
         this.isProductLoading = false;
       },
@@ -187,6 +188,6 @@ export class HomeComponent {
         this.getProducts();
       }
     });
-    
+
   }
 }

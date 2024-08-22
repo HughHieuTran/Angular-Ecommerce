@@ -6,12 +6,13 @@ import { ProductCardComponent } from './components/product-card/product-card.com
 import { SearchComponent } from './components/search/search.component';
 import { PreviewCardComponent } from './components/preview-card/preview-card.component';
 import { ToastModule } from 'primeng/toast';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, HomeComponent, ProductCardComponent, SearchComponent, SearchComponent, PreviewCardComponent,ToastModule],
+  imports: [RouterOutlet, CommonModule, HomeComponent, ProductCardComponent, SearchComponent, SearchComponent, PreviewCardComponent, ToastModule, NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: []

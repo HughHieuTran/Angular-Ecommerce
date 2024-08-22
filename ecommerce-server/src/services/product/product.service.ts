@@ -20,8 +20,8 @@ export class ProductService {
 
         const query = this.productRepository.createQueryBuilder('product')
             .take(limit)
-            .skip(offset);
-
+            .skip(offset)
+            .orderBy('product.id', 'ASC');
         if (name) {
             query.andWhere('product.name ILIKE :name', { name: `%${name}%` });
         }

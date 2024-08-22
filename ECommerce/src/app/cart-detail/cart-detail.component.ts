@@ -15,17 +15,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { roundNumber } from '../lib';
 import { Router } from '@angular/router';
 import { PriceFormatterPipe } from '../pipe/price-formatter.pipe';
+import { StoragesvService } from '../services/storagesv.service';
+import { DateFormatterPipe } from '../pipe/date-formatter.pipe';
 
 @Component({
   selector: 'app-cart-detail',
   standalone: true,
-  imports: [CommonModule, InputNumberModule, ButtonModule, ToastModule, ReactiveFormsModule, FormsModule,PriceFormatterPipe],
+  imports: [CommonModule, InputNumberModule, ButtonModule, ToastModule, ReactiveFormsModule, FormsModule, PriceFormatterPipe, DateFormatterPipe],
   templateUrl: './cart-detail.component.html',
   styleUrl: './cart-detail.component.scss'
 })
 export class CartDetailComponent {
   private store = inject(Store);
   cartItems$: Observable<OrderItem[]> = this.store.pipe(select(selectCartItems));
+  oldOrders: Order[] = [];
   totalCartQuantity$: Observable<number> = this.cartItems$.pipe(
     map(items => items.reduce((sum, item) => sum + parseInt(item.quantity + ''), 0))
   );
@@ -34,8 +37,18 @@ export class CartDetailComponent {
       return roundNumber(sum + parseFloat(item.totalPrice.toString()), 12)
     }, 0))
   );
-  constructor(private readonly productService: ProductService, private readonly orderService: OrderService, private messageService: MessageService, private router: Router) {
+  activeSection: string = 'cart';
+  constructor(private readonly productService: ProductService, private readonly orderService: OrderService, private messageService: MessageService, private router: Router, private storage: StoragesvService) {
+
+  }
+  ngOnInit() {
+    console.log('init work')
+    if (!this.storage.getItem('user')) {
+      this.router.navigate(['/']);
+    }
     this.loadCartItems();
+    this.loadOldOrders();
+
   }
   private loadCartItems() {
     this.orderService.getCart('admin@gmail.com').subscribe({
@@ -46,6 +59,17 @@ export class CartDetailComponent {
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
       },
       error: (error) => this.store.dispatch(loadCartItemsFailure({ error }))
+    });
+  }
+  private loadOldOrders() {
+    this.orderService.getHistoryOrder('admin@gmail.com').subscribe({
+      next: (orders) => {
+        orders.forEach(o => o.totalPrice = o.orderItems.reduce((sum, it) => sum + parseFloat(it.totalPrice + ''), 0));
+        this.oldOrders = orders;
+      },
+      error: (error) => {
+        console.log(error);
+      }
     });
   }
   deleteProduct(id: number | undefined) {
@@ -139,5 +163,9 @@ export class CartDetailComponent {
   }
   showError(error: string) {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error' });
+  }
+
+  changeActiveSection(section: string) {
+    this.activeSection = section;
   }
 }

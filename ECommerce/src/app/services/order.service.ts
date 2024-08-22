@@ -27,4 +27,7 @@ export class OrderService {
   payOrder(email: string): Observable<boolean> {
     return this.http.post<boolean>(this.link + 'order/pay/' + email, {});
   }
+  getOrderHistory(email: string): Observable<Order[]> {
+    return this.http.get<Order[]>(this.link + 'history/' + email);
+  }
 }

@@ -1,16 +1,16 @@
-export interface ProductQueryParams{
-    limit?: number | 10; 
-    offset?: number | 0; 
-    name?: string; 
-    minPrice?: number; 
-    maxPrice?: number; 
+export interface ProductQueryParams {
+    limit?: number | 10;
+    offset?: number | 0;
+    name?: string;
+    minPrice?: number;
+    maxPrice?: number;
 }
 
 export interface User {
     email: string;
     username?: string | undefined;
     password: string;
-    orders: Order[];
+    orders?: Order[] | undefined;
 }
 
 export interface Product {
@@ -27,7 +27,7 @@ export interface Product {
     rating: number;
     price: number;
     stock: number;
-    image:string;
+    image: string;
     orderItems: OrderItem[];
 }
 
@@ -36,11 +36,12 @@ export interface Order {
     orderDate: string;
     user: User;
     orderItems: OrderItem[];
+    totalPrice?: number | undefined;
 }
 
 export interface OrderItem {
     id: number;
-    order?: Order |undefined;
+    order?: Order | undefined;
     product?: Product | undefined;
     quantity: number;
     totalPrice: number;
