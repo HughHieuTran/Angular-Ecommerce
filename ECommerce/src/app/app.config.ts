@@ -7,7 +7,6 @@ import { provideStore } from '@ngrx/store';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { reducers, metaReducers } from './reducers';
-import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,9 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideStore(reducers, { metaReducers }),
     provideAnimations(),
-    provideHttpClient(withFetch()),
-    MessageService,
-    
+    provideHttpClient(withFetch()),    
   ]
-
 };

@@ -94,6 +94,7 @@ export class CartDetailComponent {
       next: (success: Boolean) => {
         if (success) {
           this.store.dispatch(loadCartItemsSuccess({ items: [] }))
+          this.loadOldOrders();
           this.showSuccessText('Order Successfully');
         } else {
           this.showError('Pay failed');

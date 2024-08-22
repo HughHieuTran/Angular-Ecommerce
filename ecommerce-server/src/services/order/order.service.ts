@@ -233,6 +233,7 @@ export class OrderService {
 
             if (order.length>0) {
                 order[0].IsOrdered = true;
+                order[0].orderDate = new Date().toISOString()
                 await this.orderRepository.save(order);
                 return true;
             }

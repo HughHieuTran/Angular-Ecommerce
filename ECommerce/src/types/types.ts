@@ -24,11 +24,11 @@ export interface Product {
     manufacturer?: string;
     propertyName?: string;
     propertyValue?: string;
-    rating: number;
+    rating?: number;
     price: number;
     stock: number;
-    image: string;
-    orderItems: OrderItem[];
+    image?: string;
+    orderItems?: OrderItem[] | undefined;
 }
 
 export interface Order {
@@ -37,6 +37,7 @@ export interface Order {
     user: User;
     orderItems: OrderItem[];
     totalPrice?: number | undefined;
+    IsOrdered: boolean;
 }
 
 export interface OrderItem {

@@ -47,12 +47,13 @@ export class HomeComponent {
   products: Product[] = [];
   isSidebarVisible = false;
 
-
   queryParams: ProductQueryParams = {
     limit: 12,
     offset: 0
   };
   totalRecords: number = 20;
+
+  IsWaitting: boolean = false;
 
   ngOnInit() {
     this.getProducts();
@@ -97,6 +98,8 @@ export class HomeComponent {
   }
 
   deleteProduct(id: number | undefined, quantity: number) {
+    if (this.IsWaitting) return;
+    this.IsWaitting = true;
     if (id == undefined) return;
     const product = this.products.find((x) => x.id === id);
     this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity: 0 }).subscribe({
@@ -109,10 +112,12 @@ export class HomeComponent {
         }
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
         this.showSuccess();
+        this.IsWaitting = false;
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
         this.showError(error);
+        this.IsWaitting = false;
       }
     });
 
@@ -125,6 +130,8 @@ export class HomeComponent {
   }
 
   reduceItemQuantity(id: number) {
+    if (this.IsWaitting) return;
+    this.IsWaitting = true;
     const product = this.products.find((x) => x.id === id);
 
     this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: -1 }).subscribe({
@@ -137,15 +144,19 @@ export class HomeComponent {
           product.stock += 1;
         }
         this.showSuccess();
+        this.IsWaitting = false;
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
         this.showError(error);
+        this.IsWaitting = false;
       }
     });
 
   }
   addItemQuantity(id: number) {
+    if (this.IsWaitting) return;
+    this.IsWaitting = true;
     const product = this.products.find((x) => x.id === id);
 
     this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: 1 }).subscribe({
@@ -154,23 +165,28 @@ export class HomeComponent {
         if (order) orderItems = order.orderItems
         orderItems.sort((a, b) => a.id - b.id);
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
-        if (product && product.stock - 1 > 0) {
+        if (product && product.stock - 1 >= 0) {
           product.stock -= 1;
         } else {
           this.showError('Product is out of stock');
           return;
         }
         this.showSuccess();
+        this.IsWaitting = false;
       },
       error: (error) => {
         console.log(error);
         this.store.dispatch(loadCartItemsFailure({ error }));
         this.showError(error.error.message);
+        this.loadCartItems();
+        this.IsWaitting = false;
       }
     });
 
   }
   updateCartItemQuantity(event: any, id: number) {
+    if (this.IsWaitting) return;
+    this.IsWaitting = true;
     const quantity = event.target.value;
     this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity }).subscribe({
       next: (order: Order) => {
@@ -180,12 +196,14 @@ export class HomeComponent {
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
         this.showSuccess();
         this.getProducts();
+        this.IsWaitting = false;
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
         this.showError(error.error.message);
         this.loadCartItems();
         this.getProducts();
+        this.IsWaitting = false;
       }
     });
 

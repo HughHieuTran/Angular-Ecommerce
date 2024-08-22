@@ -6,8 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class PriceFormatterPipe implements PipeTransform {
 
-  transform(value: number | string, ...args: unknown[]): unknown {
-    if (value == null) {
+  transform(value: number | string | null | undefined, ...args: unknown[]): unknown {
+    if (value == null || value == undefined) {
       return '';
     }
     let numValue = typeof value === 'string' ? parseFloat(value) : value;
