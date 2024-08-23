@@ -16,7 +16,7 @@
 
 
     <!-- Paginator -->
-    <p-paginator [rows]="queryParams.limit" [first]="1" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 20]"
+    <p-paginator [rows]="queryParams.limit" [first]="currentPage" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 20]"
       (onPageChange)="onPageChange($event)" #paginator></p-paginator>
     }
   </div>

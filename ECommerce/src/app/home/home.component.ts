@@ -50,6 +50,7 @@ export class HomeComponent {
     limit: 12,
     offset: 0
   };
+  currentPage: number = 0;
   totalRecords: number = 20;
   IsWaitting: boolean = false;
 
@@ -59,7 +60,8 @@ export class HomeComponent {
   }
   getProductsWithSearch(searchText: string) {
     this.queryParams.name = searchText;
-    console.log(this.queryParams);
+    this.currentPage = 0;
+    this.queryParams.offset = 0;
     this.getProducts();
   }
   async getProducts() {
@@ -92,6 +94,7 @@ export class HomeComponent {
     }
   }
   onPageChange(event: any) {
+    this.currentPage = event.first;
     this.queryParams.offset = event.page * event.rows;
     this.queryParams.limit = event.rows;
     this.getProducts();
