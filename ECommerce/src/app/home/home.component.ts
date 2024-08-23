@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { SearchComponent } from '../components/search/search.component';
 import { ProductService } from '../services/product.service';
-import { Order, OrderItem, Product, ProductQueryParams, Products } from '../../types/types';
+import { Order, OrderItem, Product, ProductQueryParams, Products, User } from '../../types/types';
 import { ProductCardComponent } from "../components/product-card/product-card.component";
 import { CommonModule } from '@angular/common';
 import { Paginator, PaginatorModule } from 'primeng/paginator';
@@ -19,6 +19,7 @@ import { roundNumber } from '../lib';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PriceFormatterPipe } from '../pipe/price-formatter.pipe';
+import { StoragesvService } from '../services/storagesv.service';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -27,13 +28,13 @@ import { PriceFormatterPipe } from '../pipe/price-formatter.pipe';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  constructor(private readonly productService: ProductService, private readonly orderService: OrderService, private messageService: MessageService) {
+  constructor(private readonly productService: ProductService, private readonly orderService: OrderService, private messageService: MessageService, private storagesv: StoragesvService) {
     this.loadCartItems();
   }
   @ViewChild('paginator') paginator: Paginator | undefined;
   private store = inject(Store);
-  isProductLoading: boolean = false;
   cartItems$: Observable<OrderItem[]> = this.store.pipe(select(selectCartItems));
+  isProductLoading: boolean = false;
   error$: Observable<any> = this.store.select(state => state.cart.error);
   totalCartQuantity$: Observable<number> = this.cartItems$.pipe(
     map(items => items.reduce((sum, item) => sum + parseInt(item.quantity + ''), 0))
@@ -43,16 +44,13 @@ export class HomeComponent {
       return roundNumber(sum + parseFloat(item.totalPrice.toString()), 12)
     }, 0))
   );
-
   products: Product[] = [];
   isSidebarVisible = false;
-
   queryParams: ProductQueryParams = {
     limit: 12,
     offset: 0
   };
   totalRecords: number = 20;
-
   IsWaitting: boolean = false;
 
   ngOnInit() {
@@ -78,15 +76,20 @@ export class HomeComponent {
 
   }
   private loadCartItems() {
-    this.orderService.getCart('admin@gmail.com').subscribe({
-      next: (orders: Order[]) => {
-        let orderItems: OrderItem[] = [];
-        if (orders.length > 0) orderItems = orders[0].orderItems;
-        orderItems.sort((a, b) => a.id - b.id);
-        this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
-      },
-      error: (error) => this.store.dispatch(loadCartItemsFailure({ error }))
-    });
+    const user: User | null = this.storagesv.getItem('user');
+    if (user) {
+      this.orderService.getCart(user.email).subscribe({
+        next: (orders: Order[]) => {
+          let orderItems: OrderItem[] = [];
+          if (orders.length > 0) orderItems = orders[0].orderItems;
+          orderItems.sort((a, b) => a.id - b.id);
+          this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+        },
+        error: (error) => this.store.dispatch(loadCartItemsFailure({ error }))
+      });
+    } else {
+      this.store.dispatch(loadCartItemsSuccess({ items: [] }))
+    }
   }
   onPageChange(event: any) {
     this.queryParams.offset = event.page * event.rows;
@@ -95,14 +98,16 @@ export class HomeComponent {
   }
   showSidebar() {
     this.isSidebarVisible = true;
+    this.loadCartItems();
   }
-
   deleteProduct(id: number | undefined, quantity: number) {
     if (this.IsWaitting) return;
     this.IsWaitting = true;
     if (id == undefined) return;
+    const user: User | null = this.storagesv.getItem('user');
+    if (!user) return;
     const product = this.products.find((x) => x.id === id);
-    this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity: 0 }).subscribe({
+    this.orderService.createOrUpdateCartItem({ email: user.email, productId: id, quantity: 0 }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
@@ -132,9 +137,11 @@ export class HomeComponent {
   reduceItemQuantity(id: number) {
     if (this.IsWaitting) return;
     this.IsWaitting = true;
+    const user: User | null = this.storagesv.getItem('user');
+    if (!user) return;
     const product = this.products.find((x) => x.id === id);
 
-    this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: -1 }).subscribe({
+    this.orderService.addToCart({ email: user.email, productId: id, quantity: -1 }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
@@ -158,8 +165,9 @@ export class HomeComponent {
     if (this.IsWaitting) return;
     this.IsWaitting = true;
     const product = this.products.find((x) => x.id === id);
-
-    this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: 1 }).subscribe({
+    const user: User | null = this.storagesv.getItem('user');
+    if (!user) return;
+    this.orderService.addToCart({ email: user.email, productId: id, quantity: 1 }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
@@ -188,7 +196,9 @@ export class HomeComponent {
     if (this.IsWaitting) return;
     this.IsWaitting = true;
     const quantity = event.target.value;
-    this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity }).subscribe({
+    const user: User | null = this.storagesv.getItem('user');
+    if (!user) return;
+    this.orderService.createOrUpdateCartItem({ email: user.email, productId: id, quantity }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { StoragesvService } from '../../services/storagesv.service';
 import { User } from '../../../types/types';
@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { MessageService } from 'primeng/api';
+import { Store } from '@ngrx/store';
+import { loadCartItemsSuccess } from '../../store/cart.actions';
 
 @Component({
   selector: 'app-navbar',
@@ -25,6 +27,7 @@ export class NavbarComponent {
   isFormError: boolean = false;
   email: string = '';
   password: string = '';
+  private store = inject(Store);
 
   toggleLoginPopup() {
     this.visible = true;
@@ -33,6 +36,7 @@ export class NavbarComponent {
     this.storage.removeItem('user');
     this.user = null;
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'You have Logged out successfully' });
+    this.store.dispatch(loadCartItemsSuccess({ items: [] }))
   }
   login() {
     if (this.email.length < 6 || this.password.length < 3) {

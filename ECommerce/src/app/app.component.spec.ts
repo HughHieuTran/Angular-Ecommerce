@@ -2,6 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { CartDetailComponent } from './cart-detail/cart-detail.component';
+import { MessageService } from 'primeng/api';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -10,6 +14,15 @@ describe('AppComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([{
+          path: '',
+          component: HomeComponent,
+        },
+        {
+          path: 'cart-details',
+          component: CartDetailComponent
+        },]),
+        MessageService
       ]
     }).compileComponents();
   });

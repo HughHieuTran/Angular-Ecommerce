@@ -7,7 +7,6 @@ import { SearchComponent } from './components/search/search.component';
 import { PreviewCardComponent } from './components/preview-card/preview-card.component';
 import { ToastModule } from 'primeng/toast';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { MessageService } from 'primeng/api';
 
 
 @Component({
@@ -16,7 +15,7 @@ import { MessageService } from 'primeng/api';
   imports: [RouterOutlet, CommonModule, HomeComponent, ProductCardComponent, SearchComponent, SearchComponent, PreviewCardComponent, ToastModule, NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [MessageService]
+  providers: []
 })
 export class AppComponent {
 

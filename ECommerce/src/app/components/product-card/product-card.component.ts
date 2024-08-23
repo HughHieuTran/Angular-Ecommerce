@@ -1,5 +1,5 @@
 import { Component, inject, Input, ViewChild } from '@angular/core';
-import { Order, OrderDto, OrderItem, OrderItemDto, Product } from '../../../types/types';
+import { Order, OrderDto, OrderItem, OrderItemDto, Product, User } from '../../../types/types';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -17,6 +17,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
 import { PriceFormatterPipe } from '../../pipe/price-formatter.pipe';
+import { StoragesvService } from '../../services/storagesv.service';
 
 @Component({
   selector: 'app-product-card',
@@ -32,18 +33,22 @@ export class ProductCardComponent {
   private store = inject(Store);
   cartItems$: Observable<OrderItem[]> = this.store.pipe(select(selectCartItems));;
   error$: Observable<any> = this.store.select(state => state.cart.error);
-  
+
   isAdding: boolean = false;
-  constructor(private orderService: OrderService, private messageService: MessageService) { }
+  constructor(private orderService: OrderService, private messageService: MessageService, private storagesv: StoragesvService) { }
 
   ngOnInit() {
-    
+
   }
 
   async addProductToCart() {
-    
+    const user: User | null = this.storagesv.getItem('user');
+    if (!user) {
+      this.showError("please login to order this item");
+      return;
+    };
     this.isAdding = true;
-    this.orderService.addToCart({ email: 'admin@gmail.com', productId: this.product.id, quantity: 1 }).subscribe({
+    this.orderService.addToCart({ email: user.email, productId: this.product.id, quantity: 1 }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
@@ -51,7 +56,7 @@ export class ProductCardComponent {
         this.product.stock -= 1;
         this.showSuccess();
         this.isAdding = false;
-        
+
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
@@ -59,8 +64,8 @@ export class ProductCardComponent {
         this.isAdding = false;
       }
     });
-    
-    
+
+
   }
 
   showSuccess() {
