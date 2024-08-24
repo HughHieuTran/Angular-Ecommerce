@@ -4,12 +4,14 @@ import { HomeComponent } from './home.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { ActionsSubject, ReducerManager, ReducerManagerDispatcher, StateObservable, Store } from '@ngrx/store';
-import { InjectionToken } from '@angular/core';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  let store: MockStore;
+
+  const initialState = { };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -18,18 +20,15 @@ describe('HomeComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         MessageService,
-        Store,
-        StateObservable,
-        ActionsSubject,
-        ReducerManager,
-        ReducerManagerDispatcher,
-        InjectionToken
+        provideMockStore({ initialState }),
       ]
     })
       .compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
+
     fixture.detectChanges();
   });
 

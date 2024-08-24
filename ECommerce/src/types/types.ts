@@ -26,7 +26,7 @@ export interface Product {
     propertyValue?: string;
     rating?: number;
     price: number;
-    stock: number;
+    stock: number | 0;
     image?: string;
     orderItems?: OrderItem[] | undefined;
 }
