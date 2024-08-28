@@ -225,15 +225,19 @@ export class OrderService {
             })
         } catch { }
     }
-    async payOrder(email: string): Promise<boolean> {
+    async payOrder(email: string, address: string, phoneNumber: string): Promise<boolean> {
+        
         try {
             const user = await this.userRepository.findOneBy({ email: email });
 
             const order = await this.orderRepository.find({ where: { user, IsOrdered: false }, relations: ['orderItems', 'orderItems.product', 'user'] });
 
-            if (order.length>0) {
+            if (order.length > 0) {
                 order[0].IsOrdered = true;
                 order[0].orderDate = new Date().toISOString()
+                order[0].address = address;
+                order[0].contactPhoneNumber = phoneNumber;
+                
                 await this.orderRepository.save(order);
                 return true;
             }

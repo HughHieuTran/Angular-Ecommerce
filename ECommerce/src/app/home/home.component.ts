@@ -45,10 +45,13 @@ export class HomeComponent {
     }, 0))
   );
   products: Product[] = [];
+  categories: string[] = [];
   isSidebarVisible = false;
   queryParams: ProductQueryParams = {
     limit: 12,
-    offset: 0
+    offset: 0,
+    availability: [true, true],
+    rating: [true, true, true, true, true, true]
   };
   currentPage: number = 0;
   totalRecords: number = 20;
@@ -64,14 +67,31 @@ export class HomeComponent {
     this.queryParams.offset = 0;
     this.getProducts();
   }
+
+  getProductsWithFilter(query: ProductQueryParams) {
+    this.queryParams = query;
+    this.getProducts();
+  }
+  async getProductsCategories() {
+    this.isProductLoading = true;
+    this.productService.getProductCategories().subscribe({
+      next: (data: string[]) => {
+        this.categories = data;
+        this.isProductLoading = false;
+      },
+      error: (error) => { console.log(error); this.isProductLoading = false; }
+    });
+
+  }
   async getProducts() {
     this.isProductLoading = true;
-    await new Promise(resolve => { console.log('wait 1s'); setTimeout(resolve, 500) });
+    await new Promise(resolve => { console.log('wait 1s'); setTimeout(resolve, 200) });
     this.productService.getAllProducts(this.queryParams).subscribe({
       next: (data: Products) => {
         this.products = data.products;
         this.totalRecords = data.total;
         this.isProductLoading = false;
+        this.getProductsCategories();
       },
       error: (error) => { console.log(error); this.isProductLoading = false; }
     });
@@ -136,7 +156,6 @@ export class HomeComponent {
   showError(error: string) {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
   }
-
   reduceItemQuantity(id: number) {
     if (this.IsWaitting) return;
     this.IsWaitting = true;
@@ -164,7 +183,7 @@ export class HomeComponent {
     });
 
   }
-  addItemQuantity(id: number) {
+  async addItemQuantity(id: number) {
     if (this.IsWaitting) return;
     this.IsWaitting = true;
     const product = this.products.find((x) => x.id === id);

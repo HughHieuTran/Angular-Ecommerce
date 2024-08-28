@@ -10,6 +10,12 @@ export class Order {
   @Column()
   orderDate: string;
 
+  @Column({ default: '' })
+  contactPhoneNumber: string;
+
+  @Column({ default: '' })
+  address: string;
+
   @Column({ default: false })
   IsOrdered: boolean;
 

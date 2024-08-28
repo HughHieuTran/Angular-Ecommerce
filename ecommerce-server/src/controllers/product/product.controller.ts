@@ -15,19 +15,29 @@ export class ProductController {
         const searchQuery: PaginationQueryDto = {
             limit: 9999,
             offset: 0,
-            name: paginationQuery?.name
+            category:paginationQuery?.category,
+            minPrice:paginationQuery?.minPrice,
+            maxPrice:paginationQuery?.maxPrice,
+            name: paginationQuery?.name,
+            rating: paginationQuery.rating,
+            availability:paginationQuery.availability
         }
         const totalCount = (await this.productsService.findAll(searchQuery)).length;
         const products = await this.productsService.findAll(paginationQuery);
         return { products, total: totalCount }
     }
 
+    @Get("/category")
+    async getProductCategories(): Promise<string[]> {
+        return this.productsService.getCategories();
+    }
+
     @Post()
     async populateProducts(): Promise<{ message: string }> {
         await this.productsService.create();
         return { message: 'All products have been created successfully' };
-    } 
- 
+    }
+
     @Delete()
     async deleteAll(): Promise<{ message: string }> {
         await this.productsService.deleteAll();

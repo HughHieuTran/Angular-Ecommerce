@@ -38,8 +38,8 @@ export class OrderController {
   }
 
   @Post('pay/:email')
-  async payOrder(@Param('email') email: string): Promise<boolean> {
-    return this.ordersService.payOrder(email);
+  async payOrder(@Param('email') email: string, @Body() { address, phoneNumber }): Promise<boolean> {
+    return this.ordersService.payOrder(email, address, phoneNumber);
   }
 
   @Delete()

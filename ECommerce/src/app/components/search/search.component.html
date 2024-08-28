@@ -1,6 +1,62 @@
 <div class="wrapper w-90">
-    <p-iconField iconPosition="right" >
+    <p-iconField iconPosition="right">
         <p-inputIcon styleClass="pi pi-search" />
-        <input type="text" pInputText placeholder="Search" (input)="onSearchInputChange($event)"  />
+        <input type="text" pInputText placeholder="Search" (input)="onSearchInputChange($event)" />
     </p-iconField>
+
+    <p-button icon="pi pi-filter-fill" severity="success" (onClick)="showFilterDialog()"></p-button>
 </div>
+
+<p-dialog header="Filter" [modal]="true" [(visible)]="isFilterShow" [style]="{ width: '25rem' }">
+    <div class="col full-center w-full">
+
+
+        <div class="row align-center gap-3 mb-15">
+            <label for="username" class="w-90">Product name: </label>
+            <input type="text" pInputText [(ngModel)]="productsQueryParams.name" />
+        </div>
+
+        <div class="row align-center gap-3 mb-15">
+            <label for="email" class="w-90">Category:</label>
+            <p-dropdown [options]="categoriesList" [(ngModel)]="productsQueryParams.category" placeholder="Select category" />
+        </div>
+
+        <div class="row align-center gap-3 mb-15">
+            <label for="username" class="w-90">Min price: </label>
+            <p-inputNumber [(ngModel)]="productsQueryParams.minPrice" class="w-full" inputId="integeronly" [min]="0" [max]="productsQueryParams.maxPrice"/>
+        </div>
+
+        <div class="row align-center gap-3 mb-15">
+            <label for="username" class="w-90">Max price: </label>
+            <p-inputNumber [(ngModel)]="productsQueryParams.maxPrice" class="w-full" inputId="integeronly" [min]="productsQueryParams.maxPrice" [max]="99999999" (onBlur)="maxChanged($event)"/>
+        </div>
+
+        <div class="mb-15">
+            <label class="w-90 mb-15">Availability: </label>
+        </div>
+
+        <div class="row full-center gap-3 mb-15">
+            <p-checkbox [(ngModel)]="productsQueryParams.availability[0]" label="Available" [binary]="true" inputId="binary" />
+            <p-checkbox [(ngModel)]="productsQueryParams.availability[1]" label="Out of stock" [binary]="true" inputId="binary" />
+        </div>
+        
+        <div class="mb-15">
+            <label class="w-90 mb-15">Rating: </label>
+        </div>
+
+        <div class="row full-center gap-1 mb-15">
+            <p-checkbox [(ngModel)]="productsQueryParams.rating[0]" label="0" [binary]="true" inputId="binary" checkboxIcon="pi pi-star-fill" />
+            <p-checkbox [(ngModel)]="productsQueryParams.rating[1]" label="1" [binary]="true" inputId="binary" checkboxIcon="pi pi-star-fill" />
+            <p-checkbox [(ngModel)]="productsQueryParams.rating[2]" label="2" [binary]="true" inputId="binary" checkboxIcon="pi pi-star-fill"/>
+            <p-checkbox [(ngModel)]="productsQueryParams.rating[3]" label="3" [binary]="true" inputId="binary" checkboxIcon="pi pi-star-fill"/>
+            <p-checkbox [(ngModel)]="productsQueryParams.rating[4]" label="4" [binary]="true" inputId="binary" checkboxIcon="pi pi-star-fill"/>
+            <p-checkbox [(ngModel)]="productsQueryParams.rating[5]" label="5" [binary]="true" inputId="binary" checkboxIcon="pi pi-star-fill"/>
+        </div>
+        
+        <div class="row space-around mt-25 ">
+            <p-button label="Clear filter" severity="secondary" (onClick)="clearFilter()" />
+            <p-button label="Apply filter" (onClick)="applyFilter()" />
+        </div>
+
+    </div>
+</p-dialog>

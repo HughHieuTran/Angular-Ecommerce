@@ -1,5 +1,5 @@
 <header class="wrapper row align-center space-around shadow-md">
-   
+
     <!-- Navigation -->
     <div class="row gap-1">
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
@@ -9,18 +9,21 @@
     </div>
 
     <div class="row full-center">
+        @if(user){
+            <span>Hello, {{user.username}}</span>
+        }
         <img src="assets/image/user-login.svg" alt="Logo image" class="avatar" />
         @if (user) {
-        <a href="#" (click)="logout()">Logout</a>
+        <p-button icon="pi pi-sign-out" severity="success" (click)="logout()" label="Logout"></p-button>
         }
         @else {
-        <a href="#" (click)="toggleLoginPopup()">Login</a>
+        <p-button icon="pi pi-sign-in" severity="success" href="#" (click)="toggleLoginPopup()" label="Login"></p-button>
         }
     </div>
 
 </header>
 
-<p-dialog header="Login" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+<p-dialog [header]="typeOfForm" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
     <div class=" col gap-2">
 
         <div class="row align-center gap-1 space-between my-10">
@@ -28,17 +31,39 @@
             <input [(ngModel)]="email" pInputText id="email" class="p-5" autocomplete="off" />
         </div>
 
+        @if (typeOfForm!='Login') {
+        <div class="row align-center gap-1 space-between my-10">
+            <label for="username" class="font-semibold w-6rem">Userame:</label>
+            <input [(ngModel)]="username" pInputText id="username" class="p-5" autocomplete="off" />
+        </div>
+        }
+
         <div class="row align-center gap-1 space-between my-10">
             <label for="password" class="font-semibold w-6rem">Password</label>
             <input [(ngModel)]="password" type="password" pInputText id="password" class="p-5" autocomplete="off" />
         </div>
-        
+
         @if (isFormError) {
-            <h3 class="font-red">Provided credentials is not correct</h3>
+        <h3 class="font-red">Provided credentials is not correct</h3>
         }
+
+        <div class="row full-center pt-5 ">
+            @if(typeOfForm=='Login'){
+            <span>Don't have an account ? </span> <a class="anchor" href="#" (click)="toggleForm('Register')"> Register</a>
+            }
+            @else {
+            <span>Have an account ? </span> <a class="anchor" href="#" (click)="toggleForm('Login')"> Login</a>
+            }
+        </div>
+
         <div class="row align-center gap-2 my-20 space-between">
             <p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
+            @if(typeOfForm=='Login'){
             <p-button label="Login" (onClick)="login()" />
+            }
+            @else {
+            <p-button label="Register" (onClick)="signUp()" />
+            }
         </div>
     </div>
 </p-dialog>

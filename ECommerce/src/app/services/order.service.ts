@@ -23,7 +23,7 @@ export class OrderService {
     return this.http.post<Order>(this.link + 'order/add', orderDto);
   }
 
-  payOrder(email: string): Observable<boolean> {
-    return this.http.post<boolean>(this.link + 'order/pay/' + email, {});
+  payOrder(email: string, address: string, phoneNumber: string): Observable<boolean> {
+    return this.http.post<boolean>(this.link + 'order/pay/' + email, { address, phoneNumber });
   }
 }

@@ -25,9 +25,21 @@
 
 
     }
+
     .avatar {
         height: 100%;
         object-fit: contain;
         height: 3rem;
     }
+
+  
+}
+
+.anchor {
+
+    text-decoration: underline;
+    padding-left: 10px;
+    color: blue;
+    font-weight: 700;
+
 }

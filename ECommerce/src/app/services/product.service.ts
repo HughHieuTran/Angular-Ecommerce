@@ -19,4 +19,7 @@ export class ProductService {
     }
     return this.http.get<Products>(this.link + 'product', { params: httpParams });
   }
+  getProductCategories(){
+    return this.http.get<string[]>(this.link+"product/category");
+  }
 }

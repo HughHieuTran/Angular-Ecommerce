@@ -4,6 +4,9 @@ export interface ProductQueryParams {
     name?: string;
     minPrice?: number;
     maxPrice?: number;
+    category?: string | undefined;
+    availability: boolean[] ;
+    rating: boolean[] ;
 }
 
 export interface User {
@@ -28,12 +31,15 @@ export interface Product {
     price: number;
     stock: number | 0;
     image?: string;
+    category: string;
     orderItems?: OrderItem[] | undefined;
 }
 
 export interface Order {
     id: number;
-    orderDate: string;
+    orderDate: string
+    contactPhoneNumber: string;
+    address: string;
     user: User;
     orderItems: OrderItem[];
     totalPrice?: number | undefined;

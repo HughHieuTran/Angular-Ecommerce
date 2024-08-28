@@ -35,6 +35,10 @@ app-root {
   width: 100%;
 }
 
+.w-30 {
+  width: 30%;
+}
+
 .w-90 {
   width: 90%;
 }
@@ -60,12 +64,20 @@ app-root {
   padding: 15px;
 }
 
+.ml-15 {
+  margin-left: 15px;
+}
+
 .mt-15 {
   margin-top: 15px;
 }
 
 .mt-25 {
   margin-top: 25px;
+}
+
+.mt-100 {
+  margin-top: 150px;
 }
 
 .mb-15 {
@@ -94,6 +106,10 @@ app-root {
 
 .gap-2 {
   gap: 2rem;
+}
+
+.gap-3 {
+  gap: 3rem;
 }
 
 .space-between {

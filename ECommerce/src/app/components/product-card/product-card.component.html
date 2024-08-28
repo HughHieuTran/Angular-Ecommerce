@@ -21,7 +21,7 @@
   <!-- Action buttons -->
   <div class="row btn-row">
     <button type="button" pButton icon="pi pi-plus" (click)="addProductToCart()" [rounded]="true"
-      [disabled]="product.stock<=0 || isAdding"></button>
+      [disabled]="product.stock<=0 || isAdding" [loading]="isAdding"></button>
 
   </div>
 </div>
@@ -35,6 +35,10 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td>Category:</td>
+        <td>{{product.category}}</td>
+      </tr>
       <tr>
         <td>Trademark</td>
         <td>{{product.trademark}}</td>

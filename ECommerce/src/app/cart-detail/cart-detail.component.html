@@ -7,8 +7,14 @@
 </div>
 <div class="row w-90 " style="margin: auto;">
 
-    @if (activeSection=='cart') {
+    @if(isLoading){
+    <div class="col orderlist">
+        <p-progressSpinner ariaLabel="loading" animationDuration=".2s" [style]="{'margin-left':'100px'}" />
+    </div>
+    }
+    @else {
 
+    @if (activeSection=='cart') {
 
     <div class="col orderlist">
         @if ((totalCartQuantity$|async) ===0) {
@@ -57,6 +63,9 @@
             <div class="row gap-2 full-center p-15 ">
                 <div class="column gap-05">
                     <p class="">{{order.orderDate| dateFormatter}}</p>
+                    <p class="">Address: {{order.address}}</p>
+                    <p class="">Contact number: {{order.contactPhoneNumber}}</p>
+                    
                 </div>
             </div>
             <div class="column space-around align-center gap-05 mr-25">
@@ -67,7 +76,7 @@
         }
     </div>
     }
-
+    }
     <div class="col cart-actions ">
         <div class="row total-price-block space-between align-center">
             <h3>TOTAL</h3>
@@ -77,7 +86,7 @@
         <div>
             <p-button label="PAY" severity="danger"
                 [style]="{'width':'100%','border-radius':'10px','margin-bottom':'10px','color':'white'}" size="large"
-                (onClick)="pay_onClick()" [disabled]="(totalCartQuantity$|async) ===0" />
+                (onClick)="isPayFormVisible = true" [disabled]="(totalCartQuantity$|async) ===0" />
         </div>
 
         <div>
@@ -86,3 +95,27 @@
         </div>
     </div>
 </div>
+
+
+<p-dialog header="Pay" [modal]="true" [(visible)]="isPayFormVisible" [style]="{ width: '25rem' }">
+    <div class=" col gap-2">
+
+        <div class="row align-center gap-1 space-between my-10">
+            <label for="address" class="font-semibold w-6rem">Address:</label>
+            <input [(ngModel)]="address" pInputText id="address" class="p-5" autocomplete="off" />
+        </div>
+
+        <div class="row align-center gap-1 space-between my-10">
+            <label for="phoneNumber" class="font-semibold w-6rem">Contact Number:</label>
+            <input [(ngModel)]="phoneNumber" type="phoneNumber" pInputText id="phoneNumber" class="p-5" autocomplete="off" />
+        </div>
+        
+        @if (isFormError) {
+            <h3 class="font-red">Provided fields are required</h3>
+        }
+        <div class="row align-center gap-2 my-20 space-between">
+            <p-button label="Cancel" severity="secondary" (onClick)="isPayFormVisible = false" />
+            <p-button label="Pay" (onClick)="pay_onClick()" />
+        </div>
+    </div>
+</p-dialog>

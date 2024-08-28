@@ -1,13 +1,13 @@
 <div class="row w-full">
 
   <div class="main-left column gap-1 w-full">
-    <app-search (searchOutputEvent)="getProductsWithSearch($event)"></app-search>
+    <app-search (searchOutputEvent)="getProductsWithSearch($event)" [categoriesList]="categories" (queryOutputEvent)="getProductsWithFilter($event)" [productsQueryParams]="queryParams"></app-search>
     <!-- Products Section -->
     @if (isProductLoading) {
-      <div class="w-full row full-center">
-        <p-progressSpinner ariaLabel="loading" />
+    <div class="w-full row full-center">
+      <p-progressSpinner ariaLabel="loading" animationDuration=".2s"/>
 
-      </div>
+    </div>
     }
     @else {
     <div class="row full-center wrap gap-2 w-full ">
@@ -16,8 +16,8 @@
 
 
     <!-- Paginator -->
-    <p-paginator [rows]="queryParams.limit" [first]="currentPage" [totalRecords]="totalRecords" [rowsPerPageOptions]="[6, 12, 20]"
-      (onPageChange)="onPageChange($event)" #paginator></p-paginator>
+    <p-paginator [rows]="queryParams.limit" [first]="currentPage" [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="[6, 12, 20]" (onPageChange)="onPageChange($event)" #paginator></p-paginator>
     }
   </div>
   <!-- sidebar -->
@@ -53,18 +53,26 @@
       }
       @else {
 
-
+      @if (IsWaitting) {
+      <p-progressSpinner [style]="{'width':' 40px','margin-bottom':'30px'}" strokeWidth="8" fill="var(--surface-ground)"
+        animationDuration=".5s" />
+      }
+      @else{
       <div class="row gap-1 cart-item space-between" *ngFor="let item of cartItems$ |async as cartItems$">
         <img [src]="item.product?.image" [alt]="item.product?.name">
         <div class="column gap-05">
           <p>{{item.product?.name}}</p>
 
+
           <div class="input-number">
+
             <button class="btn-left" (click)="reduceItemQuantity(item.product?.id??0)">-</button>
             <input type="number" [value]="item.quantity"
               (change)="updateCartItemQuantity($event, item.product?.id??0)" />
             <button class="btn-right" (click)="addItemQuantity(item.product?.id??0)">+</button>
+
           </div>
+
 
         </div>
         <div class="column full-center gap-05">
@@ -74,6 +82,8 @@
         </div>
 
       </div>
+      }
+
       <div class="row space-between w-90 align-center">
         <h3>Total</h3>
         <h2 style="color: red;">{{(totalCartPrice$|async)??0 | priceFormatter}}</h2>

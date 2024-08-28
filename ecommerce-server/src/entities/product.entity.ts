@@ -40,6 +40,9 @@ export class Product {
   @Column({ default: 0 })
   stock: number;
 
+  @Column({ default: "Shirt" })
+  category: string;
+
   @Column({default:'assets/images/products/image1.jpg'})
   image: string;
 

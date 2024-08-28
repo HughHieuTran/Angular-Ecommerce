@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Order, OrderItem } from '../../types/types';
+import { Order, OrderItem, User } from '../../types/types';
 import { map, Observable } from 'rxjs';
 import { ProductService } from '../services/product.service';
 import { OrderService } from '../services/order.service';
@@ -17,11 +17,13 @@ import { Router } from '@angular/router';
 import { PriceFormatterPipe } from '../pipe/price-formatter.pipe';
 import { StoragesvService } from '../services/storagesv.service';
 import { DateFormatterPipe } from '../pipe/date-formatter.pipe';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-cart-detail',
   standalone: true,
-  imports: [CommonModule, InputNumberModule, ButtonModule, ToastModule, ReactiveFormsModule, FormsModule, PriceFormatterPipe, DateFormatterPipe],
+  imports: [CommonModule, InputNumberModule, ButtonModule, ToastModule, ReactiveFormsModule, FormsModule, PriceFormatterPipe, DateFormatterPipe, ProgressSpinnerModule, DialogModule,FormsModule],
   templateUrl: './cart-detail.component.html',
   styleUrl: './cart-detail.component.scss'
 })
@@ -38,6 +40,11 @@ export class CartDetailComponent {
     }, 0))
   );
   activeSection: string = 'cart';
+  isLoading: boolean = false;
+  isFormError: boolean = false;
+  isPayFormVisible: boolean = false;
+  address: string = '';
+  phoneNumber: string = '';
   constructor(private readonly productService: ProductService, private readonly orderService: OrderService, private messageService: MessageService, private router: Router, private storage: StoragesvService) {
 
   }
@@ -50,31 +57,47 @@ export class CartDetailComponent {
     this.loadOldOrders();
 
   }
-  private loadCartItems() {
-    this.orderService.getCart('admin@gmail.com').subscribe({
+  private async loadCartItems() {
+    this.isLoading = true;
+    await new Promise(resolve => { console.log('wait 1s'); setTimeout(resolve, 200) });
+    const user: User | null = this.storage.getItem('user');
+    if (!user) return;
+    this.orderService.getCart(user.email).subscribe({
       next: (orders: Order[]) => {
         let orderItems: OrderItem[] = [];
         if (orders.length > 0) orderItems = orders[0].orderItems;
         orderItems.sort((a, b) => a.id - b.id);
-        this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
+        this.store.dispatch(loadCartItemsSuccess({ items: orderItems }));
+        this.isLoading = false;
       },
-      error: (error) => this.store.dispatch(loadCartItemsFailure({ error }))
+      error: (error) => {
+        this.store.dispatch(loadCartItemsFailure({ error }));
+        this.isLoading = false;
+      }
     });
   }
-  private loadOldOrders() {
-    this.orderService.getHistoryOrder('admin@gmail.com').subscribe({
+  private async loadOldOrders() {
+    this.isLoading = true;
+    await new Promise(resolve => { console.log('wait 1s'); setTimeout(resolve, 200) });
+    const user: User | null = this.storage.getItem('user');
+    if (!user) return;
+    this.orderService.getHistoryOrder(user.email).subscribe({
       next: (orders) => {
         orders.forEach(o => o.totalPrice = o.orderItems.reduce((sum, it) => sum + parseFloat(it.totalPrice + ''), 0));
         this.oldOrders = orders;
+        this.isLoading = false;
       },
       error: (error) => {
         console.log(error);
+        this.isLoading = false;
       }
     });
   }
   deleteProduct(id: number | undefined) {
     if (id == undefined) return;
-    this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity: 0 }).subscribe({
+    const user: User | null = this.storage.getItem('user');
+    if (!user) return;
+    this.orderService.createOrUpdateCartItem({ email: user.email, productId: id, quantity: 0 }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
@@ -90,12 +113,20 @@ export class CartDetailComponent {
   }
 
   pay_onClick() {
-    this.orderService.payOrder('admin@gmail.com').subscribe({
+    if (this.address.length <=0 || this.phoneNumber.length <= 0) {
+      this.isFormError = true;
+      setTimeout(() => this.isFormError = false, 3000);
+      return;
+    }
+    const user: User | null = this.storage.getItem('user');
+    if (!user) return;
+    this.orderService.payOrder(user.email,this.address,this.phoneNumber).subscribe({
       next: (success: Boolean) => {
         if (success) {
           this.store.dispatch(loadCartItemsSuccess({ items: [] }))
           this.loadOldOrders();
           this.showSuccessText('Order Successfully');
+          this.isPayFormVisible = false;
         } else {
           this.showError('Pay failed');
         }
@@ -110,7 +141,10 @@ export class CartDetailComponent {
     this.router.navigate(['/']);
   }
   reduceItemQuantity(id: number) {
-    this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: -1 }).subscribe({
+    this.isLoading = true;
+    const user: User | null = this.storage.getItem('user');
+    if (!user) return;
+    this.orderService.addToCart({ email: user.email, productId: id, quantity: -1 }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
@@ -118,15 +152,20 @@ export class CartDetailComponent {
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
         // this.product.stock += 1;
         this.showSuccess();
+        this.isLoading = false;
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
-        this.showError(error);
+        this.showError(error.error.message);
+        this.isLoading = false;
       }
     });
   }
   addItemQuantity(id: number) {
-    this.orderService.addToCart({ email: 'admin@gmail.com', productId: id, quantity: 1 }).subscribe({
+    this.isLoading = true;
+    const user: User | null = this.storage.getItem('user');
+    if (!user) return;
+    this.orderService.addToCart({ email: user.email, productId: id, quantity: 1 }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
@@ -134,25 +173,32 @@ export class CartDetailComponent {
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
         // this.product.stock -= 1;
         this.showSuccess();
+        this.isLoading = false;
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
-        this.showError(error);
+        this.showError(error.error.message);
+        this.isLoading = false;
       }
     });
   }
   updateCartItemQuantity(event: any, id: number) {
-    this.orderService.createOrUpdateCartItem({ email: 'admin@gmail.com', productId: id, quantity: event.target.value }).subscribe({
+    this.isLoading = true;
+    const user: User | null = this.storage.getItem('user');
+    if (!user) return;
+    this.orderService.createOrUpdateCartItem({ email: user.email, productId: id, quantity: event.target.value }).subscribe({
       next: (order: Order) => {
         let orderItems: OrderItem[] = [];
         if (order) orderItems = order.orderItems
         orderItems.sort((a, b) => a.id - b.id);
         this.store.dispatch(loadCartItemsSuccess({ items: orderItems }))
         this.showSuccess();
+        this.isLoading = false;
       },
       error: (error) => {
         this.store.dispatch(loadCartItemsFailure({ error }));
-        this.showError(error);
+        this.showError(error.error.message);
+        this.isLoading = false;
       }
     });
   }
@@ -163,10 +209,12 @@ export class CartDetailComponent {
     this.messageService.add({ severity: 'success', summary: 'Success', detail: text });
   }
   showError(error: string) {
-    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error' });
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
   }
 
   changeActiveSection(section: string) {
     this.activeSection = section;
+    if (section == 'history') this.loadOldOrders();
+    if (section == 'cart') this.loadCartItems();
   }
 }
