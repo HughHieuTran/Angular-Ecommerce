@@ -28,7 +28,7 @@ describe('ProductCardComponent', () => {
     fixture = TestBed.createComponent(ProductCardComponent);
     component = fixture.componentInstance;
     
-    product = { id: 42, name: 'Test Name', price: 10, stock: 10 };
+    product = { id: 42, name: 'Test Name', price: 10, stock: 10 , category:'shirt'};
     component.product = product;
     fixture.detectChanges();
   });

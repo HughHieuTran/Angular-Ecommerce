@@ -20,6 +20,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PriceFormatterPipe } from '../pipe/price-formatter.pipe';
 import { StoragesvService } from '../services/storagesv.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -28,7 +29,7 @@ import { StoragesvService } from '../services/storagesv.service';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  constructor(private readonly productService: ProductService, private readonly orderService: OrderService, private messageService: MessageService, private storagesv: StoragesvService) {
+  constructor(private readonly productService: ProductService, private readonly orderService: OrderService, private messageService: MessageService, private storagesv: StoragesvService, private router: Router) {
     this.loadCartItems();
   }
   @ViewChild('paginator') paginator: Paginator | undefined;
@@ -72,7 +73,7 @@ export class HomeComponent {
     this.queryParams = query;
     this.getProducts();
   }
-  async getProductsCategories() {
+  getProductsCategories() {
     this.isProductLoading = true;
     this.productService.getProductCategories().subscribe({
       next: (data: string[]) => {
@@ -83,9 +84,8 @@ export class HomeComponent {
     });
 
   }
-  async getProducts() {
+  getProducts() {
     this.isProductLoading = true;
-    await new Promise(resolve => { console.log('wait 1s'); setTimeout(resolve, 200) });
     this.productService.getAllProducts(this.queryParams).subscribe({
       next: (data: Products) => {
         this.products = data.products;
@@ -97,7 +97,7 @@ export class HomeComponent {
     });
 
   }
-  private loadCartItems() {
+  loadCartItems() {
     const user: User | null = this.storagesv.getItem('user');
     if (user) {
       this.orderService.getCart(user.email).subscribe({
@@ -183,7 +183,7 @@ export class HomeComponent {
     });
 
   }
-  async addItemQuantity(id: number) {
+  addItemQuantity(id: number) {
     if (this.IsWaitting) return;
     this.IsWaitting = true;
     const product = this.products.find((x) => x.id === id);

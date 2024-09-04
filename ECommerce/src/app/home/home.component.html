@@ -1,23 +1,31 @@
 <div class="row w-full">
 
   <div class="main-left column gap-1 w-full">
-    <app-search (searchOutputEvent)="getProductsWithSearch($event)" [categoriesList]="categories" (queryOutputEvent)="getProductsWithFilter($event)" [productsQueryParams]="queryParams"></app-search>
+    <app-search (searchOutputEvent)="getProductsWithSearch($event)" [categoriesList]="categories"
+      (queryOutputEvent)="getProductsWithFilter($event)" [productsQueryParams]="queryParams"></app-search>
     <!-- Products Section -->
     @if (isProductLoading) {
     <div class="w-full row full-center">
-      <p-progressSpinner ariaLabel="loading" animationDuration=".2s"/>
+      <p-progressSpinner ariaLabel="loading" animationDuration=".2s" />
 
     </div>
     }
     @else {
+    @if(totalRecords ===0){
+    <div class="w-full row full-center">
+      <h1>No item found...</h1>
+    </div>
+    }
+    @else{
+
     <div class="row full-center wrap gap-2 w-full ">
       <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
     </div>
 
-
     <!-- Paginator -->
     <p-paginator [rows]="queryParams.limit" [first]="currentPage" [totalRecords]="totalRecords"
       [rowsPerPageOptions]="[6, 12, 20]" (onPageChange)="onPageChange($event)" #paginator></p-paginator>
+    }
     }
   </div>
   <!-- sidebar -->
@@ -89,7 +97,7 @@
         <h2 style="color: red;">{{(totalCartPrice$|async)??0 | priceFormatter}}</h2>
       </div>
       <div class="w-90 full-center row">
-        <a style="font-weight: 800; font-size: large;" href="cart-details">View Cart Details</a>
+        <a style="font-weight: 800; font-size: large;" href="cart-details" >View Cart Details</a>
       </div>
       }
     </div>

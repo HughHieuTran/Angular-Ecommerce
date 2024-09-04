@@ -34,8 +34,8 @@ describe('ProductService', () => {
     it('should return an Observable<Products> without params', () => {
       const dummyProducts: Products = {
         products: [
-          { id: 1, name: 'Product 1', price: 100, stock: 10 },
-          { id: 2, name: 'Product 2', price: 150, stock: 5 }
+          { id: 1, name: 'Product 1', price: 100, stock: 10, category: 'shirt' },
+          { id: 2, name: 'Product 2', price: 150, stock: 5, category: 'shirt' }
         ],
         total: 2
       };
@@ -52,7 +52,7 @@ describe('ProductService', () => {
     it('should return an Observable<Products> with params', () => {
       const dummyProducts: Products = {
         products: [
-          { id: 1, name: 'Product 1', price: 100, stock: 10 }
+          { id: 1, name: 'Product 1', price: 100, stock: 10, category: 'shirt' }
         ],
         total: 1
       };

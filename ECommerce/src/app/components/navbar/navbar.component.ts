@@ -40,6 +40,7 @@ export class NavbarComponent {
     this.user = null;
     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'You have Logged out successfully' });
     this.store.dispatch(loadCartItemsSuccess({ items: [] }))
+    this.router.navigate(["/"]);
   }
   login() {
     if (this.email.length < 6 || this.password.length < 3) {

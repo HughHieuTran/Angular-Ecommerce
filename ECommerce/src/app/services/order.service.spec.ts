@@ -37,18 +37,20 @@ describe('OrderService', () => {
           orderDate: '2024-08-22',
           user: { email: 'test@gmail.com', username: 'John Doe', password: 'admin' }, // Example User
           orderItems: [
-            { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10 }, quantity: 2, totalPrice: 200 },
-            { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5 }, quantity: 1, totalPrice: 150 }
+            { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10, category: 'shirt' }, quantity: 2, totalPrice: 200 },
+            { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5, category: 'shirt' }, quantity: 1, totalPrice: 150 }
           ],
           totalPrice: 350,
-          IsOrdered: false
+          IsOrdered: false,
+          contactPhoneNumber: '012345678',
+          address: 'hieu'
         }
       ];
       service.getCart('test@gmail.com').subscribe(orders => {
         expect(orders.length).toBe(1);
         expect(orders).toEqual(dummyOrders);
       });
-      
+
       const req = httpMock.expectOne(`${mockLink}order/test@gmail.com`);
       expect(req.request.method).toBe('GET');
       req.flush(dummyOrders);
@@ -64,11 +66,13 @@ describe('OrderService', () => {
           orderDate: '2024-07-15',
           user: { email: 'test@gmail.com', username: 'John Doe', password: 'admin' }, // Example User
           orderItems: [
-            { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10 }, quantity: 2, totalPrice: 200 },
-            { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5 }, quantity: 1, totalPrice: 150 }
+            { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10, category: 'shirt' }, quantity: 2, totalPrice: 200 },
+            { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5, category: 'shirt' }, quantity: 1, totalPrice: 150 }
           ],
           totalPrice: 200,
-          IsOrdered: true
+          IsOrdered: true,
+          contactPhoneNumber: '012345678',
+          address: 'hieu'
         }
       ];
 
@@ -90,11 +94,13 @@ describe('OrderService', () => {
         orderDate: '2024-08-22',
         user: { email: 'test@gmail.com', username: 'John Doe', password: 'admin' }, // Example User
         orderItems: [
-          { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10 }, quantity: 2, totalPrice: 200 },
-          { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5 }, quantity: 1, totalPrice: 150 }
+          { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10, category: 'shirt' }, quantity: 2, totalPrice: 200 },
+          { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5, category: 'shirt' }, quantity: 1, totalPrice: 150 }
         ],
         totalPrice: 200,
-        IsOrdered: false
+        IsOrdered: false,
+        contactPhoneNumber: '012345678',
+        address: 'hieu'
       };
       const orderDto: updateORderItemDto = { email: 'test@gmail.com', productId: 1, quantity: 2 };
 
@@ -116,11 +122,13 @@ describe('OrderService', () => {
         orderDate: '2024-08-22',
         user: { email: 'test@gmail.com', username: 'John Doe', password: 'admin' }, // Example User
         orderItems: [
-          { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10 }, quantity: 2, totalPrice: 200 },
-          { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5 }, quantity: 1, totalPrice: 150 }
+          { id: 1, product: { id: 1, name: 'Product 1', price: 100, stock: 10, category: 'shirt' }, quantity: 2, totalPrice: 200 },
+          { id: 2, product: { id: 2, name: 'Product 2', price: 150, stock: 5, category: 'shirt' }, quantity: 1, totalPrice: 150 }
         ],
         totalPrice: 200,
-        IsOrdered: false
+        IsOrdered: false,
+        contactPhoneNumber: '012345678',
+        address: 'hieu'
       };
       const orderDto: updateORderItemDto = { email: 'test@gmail.com', productId: 1, quantity: 2 };
 
@@ -137,7 +145,7 @@ describe('OrderService', () => {
 
   describe('payOrder', () => {
     it('should return an Observable<boolean>', () => {
-      service.payOrder('test@example.com').subscribe(result => {
+      service.payOrder('test@example.com', 'hieu', '012345678').subscribe(result => {
         expect(result).toBe(true);
       });
 
